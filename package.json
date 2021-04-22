@@ -22,6 +22,9 @@
     "@typescript-eslint/eslint-plugin-tslint": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "eslint-plugin-import": "^2.22.1",
+    "install": "^0.13.0",
+    "npm": "^7.10.0",
+    "socket.io-client": "^4.0.1",
     "typescript": "^4.2.4"
   }
 }
