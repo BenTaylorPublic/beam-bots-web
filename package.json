@@ -1,0 +1,27 @@
+{
+  "name": "beam-bots",
+  "version": "1.0.0",
+  "description": "beam-bots",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BenTaylorPublic/beam-bots.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BenTaylorPublic/beam-bots/issues"
+  },
+  "homepage": "https://github.com/BenTaylorPublic/beam-bots#readme",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint-plugin-import": "^2.22.1",
+    "typescript": "^4.2.4"
+  }
+}
