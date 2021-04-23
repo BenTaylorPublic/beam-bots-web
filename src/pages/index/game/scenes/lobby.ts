@@ -27,7 +27,7 @@ export class Lobby extends IGameScene {
     protected loop(): void {
         for (let i: number = 0; i < PlayerState.allPlayers.length; i++) {
             this.context.fillStyle = this.convertColorToHex(PlayerState.allPlayers[i].color);
-            this.context.fillText(`${PlayerState.allPlayers[i].id}: ${PlayerState.allPlayers[i].name}`, 0, (i + 1) * 50);
+            this.context.fillText(PlayerState.allPlayers[i].name, 0, (i + 1) * 50);
         }
 
     }
