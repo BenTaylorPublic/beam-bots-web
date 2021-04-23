@@ -1,4 +1,73 @@
 body {
-        background-color: black;
-        color: white;      
+  background-color: #111111;
+  color: white;
+  font-family: "Courier", monospace;
+  font-size: 16px;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input[type=button], button {
+  display: inline-block;
+  padding: 5px 10px;
+  border: 2px solid white;
+  border-radius: 2px;
+  font-family: "Courier", monospace;
+  font-size: 16px;
+  color: white;
+  transition: all 0.2s;
+  background-color: transparent;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    border-color: #808080;
+    color: #808080;
+  }
+
+  &:hover:not(:disabled) {
+    color: black;
+    background-color: white;
+  }
+
+  &:active:not(:disabled) {
+    background-color: #808080;
+  }
+}
+
+/*
+=============== SHARED STUFF
+ */
+
+#errorDivBackground {
+  position: fixed;
+  z-index: 1000;
+  background-color: #00000088;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  & > div {
+    background-color: black;
+    border: 1px solid white;
+    position: absolute;
+    margin: auto;
+    width: 600px;
+    padding: 8px;
+    left: 0;
+    right: 0;
+
+    #refreshMessage {
+      margin-top: 10px;
+      color: #808080;
+    }
+
+    input {
+      margin-top: 10px;
+    }
+  }
 }
