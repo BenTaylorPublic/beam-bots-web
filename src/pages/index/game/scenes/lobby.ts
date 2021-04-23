@@ -1,10 +1,11 @@
 import {IGameScene} from "../i-game-scene";
-import {GameScenes} from "../../../../beam-bots-shared/types";
+import {GameScenes, PlayerColors} from "../../../../beam-bots-shared/types";
 import {
     CommunicationObjectTypesServerToClient,
     CommunicationTypeAndObject
 } from "../../../../beam-bots-shared/communication-objects/communication-object";
 import {PlayerState} from "../player-state";
+import {Constants} from "../../../../shared/constants";
 
 export class Lobby extends IGameScene {
     public name: GameScenes = "Lobby";
@@ -12,7 +13,6 @@ export class Lobby extends IGameScene {
     constructor() {
         super();
         this.context.font = "50px monospace";
-        this.context.fillStyle = "white";
     }
 
     public handleCommunication(communicationTypeAndObject: CommunicationTypeAndObject): void {
@@ -26,9 +26,33 @@ export class Lobby extends IGameScene {
 
     protected loop(): void {
         for (let i: number = 0; i < PlayerState.allPlayers.length; i++) {
+            this.context.fillStyle = this.convertColorToHex(PlayerState.allPlayers[i].color);
             this.context.fillText(`${PlayerState.allPlayers[i].id}: ${PlayerState.allPlayers[i].name}`, 0, (i + 1) * 50);
         }
 
+    }
+
+    private convertColorToHex(color: PlayerColors): string {
+        switch (color) {
+            case "blue":
+                return Constants.BLUE;
+            case "red":
+                return Constants.RED;
+            case "green":
+                return Constants.GREEN;
+            case "purple":
+                return Constants.PURPLE;
+            case "pink":
+                return Constants.PINK;
+            case "yellow":
+                return Constants.YELLOW;
+            case "orange":
+                return Constants.ORANGE;
+            case "brown":
+                return Constants.BROWN;
+            default:
+                return "#FFFFFF";
+        }
     }
 
 }
