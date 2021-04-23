@@ -1,13 +1,15 @@
 import {io, Socket} from "socket.io-client";
-import DisconnectReason = Socket.DisconnectReason;
 import {ErrorService} from "../../shared/services/error-service";
 import {PlayerState} from "./game/player-state";
 import {CommunicationTypeAndObject} from "../../beam-bots-shared/communication-objects/communication-object";
+import {Constants} from "../../shared/constants";
+import DisconnectReason = Socket.DisconnectReason;
 
 class IndexView {
 
     public static initialize(): void {
         this.setupSocket();
+        this.setupDom();
     }
 
     private static setupSocket(): void {
@@ -43,6 +45,18 @@ class IndexView {
         socket.on("communication", (communicationTypeAndObject: CommunicationTypeAndObject) => {
             PlayerState.handleCommunication(communicationTypeAndObject);
         });
+    }
+
+    private static setupDom(): void {
+        const canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
+        canvas.height = Constants.CANVAS_HEIGHT;
+        canvas.style.height = `${canvas.height}px`;
+        canvas.width = Constants.CANVAS_WIDTH;
+        canvas.style.width = `${canvas.width}px`;
+
+        const overlay: HTMLDivElement = document.getElementById("overlay") as HTMLDivElement;
+        overlay.style.height = `${canvas.height}px`;
+        overlay.style.width = `${canvas.width}px`;
     }
 
 }

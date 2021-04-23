@@ -13,6 +13,7 @@ export class Lobby extends IGameScene {
     constructor() {
         super();
         this.context.font = "50px monospace";
+        this.setupOverlay();
     }
 
     public handleCommunication(communicationTypeAndObject: CommunicationTypeAndObject): void {
@@ -53,6 +54,15 @@ export class Lobby extends IGameScene {
             default:
                 return "#FFFFFF";
         }
+    }
+
+    private setupOverlay(): void {
+        const startButton: HTMLButtonElement = document.createElement("button");
+        startButton.innerText = "Start";
+        startButton.style.position = "absolute";
+        startButton.style.bottom = "10px";
+        startButton.style.right = "10px";
+        this.overlay.appendChild(startButton);
     }
 
 }

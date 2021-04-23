@@ -14,10 +14,6 @@ export abstract class IGameScene {
         this.stopLoop = false;
         this.overlay = document.getElementById("overlay") as HTMLDivElement;
         this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
-        this.canvas.height = Constants.CANVAS_HEIGHT;
-        this.canvas.style.height = `${this.canvas.height}px`;
-        this.canvas.width = Constants.CANVAS_WIDTH;
-        this.canvas.style.width = `${this.canvas.width}px`;
         this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     }
 
