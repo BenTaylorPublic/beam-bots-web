@@ -1,7 +1,6 @@
 import {GameScenes} from "../../../beam-bots-shared/types";
 import {Lobby} from "./scenes/lobby";
 import {ErrorService} from "../../../shared/services/error-service";
-import {ChangeGameScene} from "../../../beam-bots-shared/communication-objects/server-to-client/change-game-scene";
 import {IGameScene} from "./i-game-scene";
 import {MinigameIceCircle} from "./scenes/minigame-ice-circle";
 import {
@@ -20,8 +19,8 @@ export class SceneController {
         const type: CommunicationObjectTypesServerToClient = communicationTypeAndObject.type as CommunicationObjectTypesServerToClient;
 
         switch (type) {
-            case "ChangeGameScene":
-                this.setScene(communicationTypeAndObject.object as ChangeGameScene);
+            case "SetLobbyScene":
+                this.setScene("Lobby");
                 return;
         }
 
@@ -32,10 +31,8 @@ export class SceneController {
         this.scene.handleCommunication(communicationTypeAndObject);
     }
 
-    public static setScene(sceneObject: ChangeGameScene): void {
+    public static setScene(scene: GameScenes, object: null = null): void {
         this.scene?.destroy();
-
-        const scene: GameScenes = sceneObject.newScene;
 
         switch (scene) {
             case "Lobby":
