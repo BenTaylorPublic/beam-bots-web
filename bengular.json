@@ -6,5 +6,5 @@
   "prodDirectory": "./docs/",
   "componentsDirectory": "./src/components/",
   "assetsDirectory": "./src/assets/",
-  "bengularVersion": "v1.1.0"
+  "bengularVersion": "v1.1.1"
 }
