@@ -4,12 +4,14 @@ import {
     CommunicationObjectTypesServerToClient,
     CommunicationTypeAndObject
 } from "../../../../beam-bots-shared/communication-objects/communication-object";
+import {SetMinigameIceCircleScene} from "../../../../beam-bots-shared/communication-objects/server-to-client/set-minigame-ice-circle-scene";
 
 export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
 
-    constructor() {
+    constructor(setMinigameIceCircleScene: SetMinigameIceCircleScene) {
         super();
+        this.context.font = "50px monospace";
     }
 
     public handleCommunication(communicationTypeAndObject: CommunicationTypeAndObject): void {
@@ -22,6 +24,7 @@ export class MinigameIceCircle extends IGameScene {
     }
 
     protected loop(): void {
-        console.log("X");
+        this.context.fillStyle = "white";
+        this.context.fillText("Minigame Ice Circle Scene", 50, 400);
     }
 }

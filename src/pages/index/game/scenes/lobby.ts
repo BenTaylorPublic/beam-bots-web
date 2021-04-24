@@ -6,6 +6,7 @@ import {
 } from "../../../../beam-bots-shared/communication-objects/communication-object";
 import {PlayerState} from "../player-state";
 import {Constants} from "../../../../shared/constants";
+import {LobbyStartButtonClicked} from "../../../../beam-bots-shared/communication-objects/client-to-server/lobby-start-button-clicked";
 
 export class Lobby extends IGameScene {
     public name: GameScenes = "Lobby";
@@ -62,7 +63,13 @@ export class Lobby extends IGameScene {
         startButton.style.position = "absolute";
         startButton.style.bottom = "10px";
         startButton.style.right = "10px";
+        startButton.onclick = this.startButtonClicked.bind(this);
         this.overlay.appendChild(startButton);
+    }
+
+    private startButtonClicked(): void {
+        const lobbyStartButtonClicked: LobbyStartButtonClicked = {};
+        PlayerState.sendCommunication<LobbyStartButtonClicked>("LobbyStartButtonClicked", lobbyStartButtonClicked);
     }
 
 }

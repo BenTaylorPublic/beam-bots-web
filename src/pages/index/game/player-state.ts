@@ -6,7 +6,10 @@ import {
 import {SetName} from "../../../beam-bots-shared/communication-objects/client-to-server/set-name";
 import {
     CommunicationObject,
-    CommunicationObjectTypes, CommunicationObjectTypesServerToClient, CommunicationTypeAndObject
+    CommunicationObjectTypes,
+    CommunicationObjectTypesClientToServer,
+    CommunicationObjectTypesServerToClient,
+    CommunicationTypeAndObject
 } from "../../../beam-bots-shared/communication-objects/communication-object";
 import {SceneController} from "./scene-controller";
 
@@ -45,7 +48,7 @@ export class PlayerState {
     public static disconnected(): void {
     }
 
-    private static sendCommunication<T extends CommunicationObject>(type: CommunicationObjectTypes, object: T): void {
+    public static sendCommunication<T>(type: CommunicationObjectTypesClientToServer, object: T): void {
         const communicationTypeAndObject: CommunicationTypeAndObject = {
             type: type,
             object: object
