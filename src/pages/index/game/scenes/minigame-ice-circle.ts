@@ -8,10 +8,13 @@ import {SetMinigameIceCircleScene} from "../../../../beam-bots-shared/communicat
 
 export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
+    private acceleration: number;
 
     constructor(setMinigameIceCircleScene: SetMinigameIceCircleScene) {
         super();
         this.context.font = "50px monospace";
+        this.acceleration = setMinigameIceCircleScene.acceleration;
+        this.canvas.style.backgroundImage = "url('/assets/ice_circle_bg.png')";
     }
 
     public handleCommunication(communicationTypeAndObject: CommunicationTypeAndObject): void {
@@ -24,7 +27,7 @@ export class MinigameIceCircle extends IGameScene {
     }
 
     protected loop(): void {
-        this.context.fillStyle = "white";
-        this.context.fillText("Minigame Ice Circle Scene", 50, 400);
+        this.context.fillStyle = "black";
+        this.context.fillText("Minigame Ice Circle Scene", 50, 50);
     }
 }
