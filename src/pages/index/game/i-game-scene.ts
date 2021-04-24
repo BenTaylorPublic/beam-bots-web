@@ -1,5 +1,8 @@
 import {GameScenes} from "../../../beam-bots-shared/types";
-import {CommunicationTypeAndObject} from "../../../beam-bots-shared/communication-objects/communication-object";
+import {
+    CommunicationObjectTypesServerToClient,
+    CommunicationTypeAndObject
+} from "../../../beam-bots-shared/communication-objects/communication-object";
 import {ErrorService} from "../../../shared/services/error-service";
 
 export abstract class IGameScene {
@@ -39,7 +42,7 @@ export abstract class IGameScene {
         throw ErrorService.error(1012, `Unknown communication type in ${this.name}, '${communicationTypeAndObject.type}'`);
     }
 
-    public abstract handleCommunication(communicationTypeAndObject: CommunicationTypeAndObject): void;
+    public abstract handleCommunication(type: CommunicationObjectTypesServerToClient, communicationTypeAndObject: CommunicationTypeAndObject): void;
 
     protected abstract loop(): void;
 }

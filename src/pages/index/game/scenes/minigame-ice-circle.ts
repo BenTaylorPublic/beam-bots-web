@@ -17,8 +17,9 @@ export class MinigameIceCircle extends IGameScene {
         this.canvas.style.backgroundImage = "url('/assets/ice_circle_bg.png')";
     }
 
-    public handleCommunication(communicationTypeAndObject: CommunicationTypeAndObject): void {
-        const type: CommunicationObjectTypesServerToClient = communicationTypeAndObject.type as CommunicationObjectTypesServerToClient;
+    public handleCommunication(
+        type: CommunicationObjectTypesServerToClient,
+        communicationTypeAndObject: CommunicationTypeAndObject): void {
         switch (type) {
             default:
                 this.failedToHandleCommunication(communicationTypeAndObject);

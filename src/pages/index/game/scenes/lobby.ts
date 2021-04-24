@@ -17,8 +17,9 @@ export class Lobby extends IGameScene {
         this.setupOverlay();
     }
 
-    public handleCommunication(communicationTypeAndObject: CommunicationTypeAndObject): void {
-        const type: CommunicationObjectTypesServerToClient = communicationTypeAndObject.type as CommunicationObjectTypesServerToClient;
+    public handleCommunication(
+        type: CommunicationObjectTypesServerToClient,
+        communicationTypeAndObject: CommunicationTypeAndObject): void {
         switch (type) {
             default:
                 this.failedToHandleCommunication(communicationTypeAndObject);

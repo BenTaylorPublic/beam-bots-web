@@ -6,7 +6,6 @@ export class HelperService {
 
     public static initialize(): void {
         this.conversionRateForCoords = Constants.CANVAS_HEIGHT / Sconstants.GAME_LOGIC_HEIGHT;
-        console.log(this.conversionRateForCoords);
     }
 
     public static convertGameLogicCoordsToLocalCoords(originalPoint: Point2D): Point2D {
@@ -14,5 +13,9 @@ export class HelperService {
             x: Math.floor(originalPoint.x * this.conversionRateForCoords),
             y: Math.floor(originalPoint.y * this.conversionRateForCoords)
         };
+    }
+
+    public static async delay(ms: number): Promise<void> {
+        await new Promise(resolve => setTimeout(() => resolve(1), ms));
     }
 }

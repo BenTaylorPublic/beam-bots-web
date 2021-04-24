@@ -32,7 +32,7 @@ export class SceneController {
             throw ErrorService.error(1011, `Communication type passed to SceneController, when scene is null '${communicationTypeAndObject.type}'`);
         }
 
-        this.scene.handleCommunication(communicationTypeAndObject);
+        this.scene.handleCommunication(type, communicationTypeAndObject);
     }
 
     public static setScene(scene: GameScenes, object: null | any = null): void {
