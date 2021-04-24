@@ -12,6 +12,7 @@ import {
     CommunicationTypeAndObject
 } from "../../../beam-bots-shared/communication-objects/communication-object";
 import {SceneController} from "./scene-controller";
+import {HelperService} from "../../../shared/services/helper-service";
 
 export class PlayerState {
     public static allPlayers: Player[];
@@ -21,6 +22,7 @@ export class PlayerState {
     public static initialize(socket: Socket): void {
         this.allPlayers = [];
         this.socket = socket;
+        HelperService.initialize();
         SceneController.initialize();
     }
 

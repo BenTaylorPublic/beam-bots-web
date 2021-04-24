@@ -1,7 +1,6 @@
 import {GameScenes} from "../../../beam-bots-shared/types";
 import {CommunicationTypeAndObject} from "../../../beam-bots-shared/communication-objects/communication-object";
 import {ErrorService} from "../../../shared/services/error-service";
-import {Constants} from "../../../shared/constants";
 
 export abstract class IGameScene {
     protected overlay: HTMLDivElement;
