@@ -7,6 +7,7 @@ import {ErrorService} from "../../../shared/services/error-service";
 
 export abstract class IGameScene {
     protected overlay: HTMLDivElement;
+    protected background: HTMLDivElement;
     protected canvas: HTMLCanvasElement;
     protected context: CanvasRenderingContext2D;
     protected stopLoop: boolean;
@@ -14,6 +15,7 @@ export abstract class IGameScene {
 
     constructor() {
         this.stopLoop = false;
+        this.background = document.getElementById("background") as HTMLDivElement;
         this.overlay = document.getElementById("overlay") as HTMLDivElement;
         this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;

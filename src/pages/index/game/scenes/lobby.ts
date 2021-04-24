@@ -13,6 +13,7 @@ export class Lobby extends IGameScene {
 
     constructor() {
         super();
+        this.background.style.backgroundColor = "black";
         this.context.font = "50px monospace";
         this.setupOverlay();
     }

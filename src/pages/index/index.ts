@@ -57,6 +57,10 @@ class IndexView {
         const overlay: HTMLDivElement = document.getElementById("overlay") as HTMLDivElement;
         overlay.style.height = `${canvas.height}px`;
         overlay.style.width = `${canvas.width}px`;
+
+        const background: HTMLDivElement = document.getElementById("background") as HTMLDivElement;
+        background.style.height = `${canvas.height}px`;
+        background.style.width = `${canvas.width}px`;
     }
 
 }

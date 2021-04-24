@@ -14,7 +14,7 @@ export class MinigameIceCircle extends IGameScene {
         super();
         this.context.font = "50px monospace";
         this.acceleration = setMinigameIceCircleScene.acceleration;
-        this.canvas.style.backgroundImage = "url('/assets/ice_circle_bg.png')";
+        this.background.style.backgroundImage = "url('/assets/ice_circle_bg.png')";
     }
 
     public handleCommunication(
