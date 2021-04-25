@@ -6,7 +6,7 @@ import {
 } from "../../../../beam-bots-shared/communication-objects/communication-object";
 import {PlayerState} from "../player-state";
 import {Constants} from "../../../../shared/constants";
-import {LobbyStartButtonClicked} from "../../../../beam-bots-shared/communication-objects/client-to-server/lobby-start-button-clicked";
+import {LobbyStartButtonClicked} from "../../../../beam-bots-shared/communication-objects/client-to-server/lobby/lobby-start-button-clicked";
 
 export class Lobby extends IGameScene {
     public name: GameScenes = "Lobby";

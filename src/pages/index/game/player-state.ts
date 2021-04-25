@@ -1,18 +1,14 @@
 import {Socket} from "socket.io-client";
-import {
-    Player,
-    UpdatedPlayerList
-} from "../../../beam-bots-shared/communication-objects/server-to-client/updated-player-list";
+import {UpdatedPlayerList} from "../../../beam-bots-shared/communication-objects/server-to-client/updated-player-list";
 import {SetName} from "../../../beam-bots-shared/communication-objects/client-to-server/set-name";
 import {
-    CommunicationObject,
-    CommunicationObjectTypes,
     CommunicationObjectTypesClientToServer,
     CommunicationObjectTypesServerToClient,
     CommunicationTypeAndObject
 } from "../../../beam-bots-shared/communication-objects/communication-object";
 import {SceneController} from "./scene-controller";
 import {HelperService} from "../../../shared/services/helper-service";
+import {Player} from "../../../beam-bots-shared/interfaces";
 
 export class PlayerState {
     public static allPlayers: Player[];

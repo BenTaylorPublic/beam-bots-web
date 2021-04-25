@@ -7,7 +7,7 @@ import {
     CommunicationObjectTypesServerToClient,
     CommunicationTypeAndObject
 } from "../../../beam-bots-shared/communication-objects/communication-object";
-import {SetMinigameIceCircleScene} from "../../../beam-bots-shared/communication-objects/server-to-client/set-minigame-ice-circle-scene";
+import {SetMinigameIceCircleScene} from "../../../beam-bots-shared/communication-objects/server-to-client/minigame-ice-circle/set-minigame-ice-circle-scene";
 
 export class SceneController {
     private static scene: IGameScene | null;
