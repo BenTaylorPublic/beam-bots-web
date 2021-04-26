@@ -1,5 +1,6 @@
 import {Constants} from "../constants";
 import {Sconstants} from "../../beam-bots-shared/sconstants";
+import {Point2D} from "../../beam-bots-shared/interfaces";
 
 export class HelperService {
     private static conversionRateForCoords: number;
