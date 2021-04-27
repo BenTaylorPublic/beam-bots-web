@@ -4,6 +4,8 @@ import {
     CommunicationTypeAndObject
 } from "../../../beam-bots-shared/communication-objects/communication-object";
 import {ErrorService} from "../../../shared/services/error-service";
+import {KeybindsController} from "./keybinds-controller";
+import {ConstantsWeb} from "../../../shared/constants-web";
 
 export abstract class IGameScene {
     protected overlay: HTMLDivElement;
@@ -11,6 +13,7 @@ export abstract class IGameScene {
     protected canvas: HTMLCanvasElement;
     protected context: CanvasRenderingContext2D;
     protected stopLoop: boolean;
+    private lastLoopTime: number;
     public abstract name: GameScenes;
 
     constructor() {
@@ -19,6 +22,7 @@ export abstract class IGameScene {
         this.overlay = document.getElementById("overlay") as HTMLDivElement;
         this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+        this.lastLoopTime = Date.now();
     }
 
     public async startLoop(): Promise<void> {
@@ -29,12 +33,15 @@ export abstract class IGameScene {
                     return;
                 }
                 this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                this.loop();
-            }, 50);
+                const newLoopTime: number = Date.now();
+                this.loop(newLoopTime - this.lastLoopTime);
+                this.lastLoopTime = newLoopTime;
+            }, ConstantsWeb.TICK_DELAY);
         });
     }
 
     public destroy(): void {
+        KeybindsController.removeAllCallbacks();
         this.overlay.innerHTML = "";
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.stopLoop = true;
@@ -46,5 +53,5 @@ export abstract class IGameScene {
 
     public abstract handleCommunication(type: CommunicationObjectTypesServerToClient, communicationTypeAndObject: CommunicationTypeAndObject): void;
 
-    protected abstract loop(): void;
+    protected abstract loop(ms: number): void;
 }

@@ -2,7 +2,8 @@ import {io, Socket} from "socket.io-client";
 import {ErrorService} from "../../shared/services/error-service";
 import {PlayerState} from "./game/player-state";
 import {CommunicationTypeAndObject} from "../../beam-bots-shared/communication-objects/communication-object";
-import {Constants} from "../../shared/constants";
+import {ConstantsWeb} from "../../shared/constants-web";
+import {KeybindsController} from "./game/keybinds-controller";
 import DisconnectReason = Socket.DisconnectReason;
 
 class IndexView {
@@ -10,10 +11,10 @@ class IndexView {
     public static initialize(): void {
         this.setupSocket();
         this.setupDom();
+        KeybindsController.initialize();
     }
 
     private static setupSocket(): void {
-
         const serverIp: string | null = localStorage.getItem("serverIp");
         const serverPort: string | null = localStorage.getItem("serverPort");
         const password: string | null = localStorage.getItem("password");
@@ -49,9 +50,9 @@ class IndexView {
 
     private static setupDom(): void {
         const canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
-        canvas.height = Constants.CANVAS_HEIGHT;
+        canvas.height = ConstantsWeb.CANVAS_HEIGHT;
         canvas.style.height = `${canvas.height}px`;
-        canvas.width = Constants.CANVAS_WIDTH;
+        canvas.width = ConstantsWeb.CANVAS_WIDTH;
         canvas.style.width = `${canvas.width}px`;
 
         const overlay: HTMLDivElement = document.getElementById("overlay") as HTMLDivElement;

@@ -1,13 +1,13 @@
-import {Constants} from "../constants";
-import {Sconstants} from "../../beam-bots-shared/sconstants";
-import {Point2D} from "../../beam-bots-shared/interfaces";
-import {PlayerColors} from "../../beam-bots-shared/types";
+import {Point2D} from "../beam-bots-shared/interfaces";
+import {Sconstants} from "../beam-bots-shared/sconstants";
+import {ConstantsWeb} from "./constants-web";
+import {PlayerColors} from "../beam-bots-shared/types";
 
-export class HelperService {
+export class HelperWebFunctions {
     private static conversionRateForCoords: number;
 
     public static initialize(): void {
-        this.conversionRateForCoords = Constants.CANVAS_HEIGHT / Sconstants.GAME_LOGIC_HEIGHT;
+        this.conversionRateForCoords = ConstantsWeb.CANVAS_HEIGHT / Sconstants.GAME_LOGIC_HEIGHT;
     }
 
     public static convertGameLogicCoordsToLocalCoords(originalPoint: Point2D): Point2D {
@@ -28,21 +28,21 @@ export class HelperService {
     public static convertColorToHexcode(color: PlayerColors): string {
         switch (color) {
             case "blue":
-                return Constants.BLUE;
+                return ConstantsWeb.BLUE;
             case "red":
-                return Constants.RED;
+                return ConstantsWeb.RED;
             case "green":
-                return Constants.GREEN;
+                return ConstantsWeb.GREEN;
             case "purple":
-                return Constants.PURPLE;
+                return ConstantsWeb.PURPLE;
             case "pink":
-                return Constants.PINK;
+                return ConstantsWeb.PINK;
             case "yellow":
-                return Constants.YELLOW;
+                return ConstantsWeb.YELLOW;
             case "orange":
-                return Constants.ORANGE;
+                return ConstantsWeb.ORANGE;
             case "brown":
-                return Constants.BROWN;
+                return ConstantsWeb.BROWN;
         }
     }
 }
