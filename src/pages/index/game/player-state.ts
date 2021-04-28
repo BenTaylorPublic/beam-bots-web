@@ -8,7 +8,6 @@ import {
 } from "../../../beam-bots-shared/communication-objects/communication-object";
 import {SceneController} from "./scene-controller";
 import {Player} from "../../../beam-bots-shared/interfaces";
-import {HelperWebFunctions} from "../../../shared/helper-web-functions";
 import {ConstantsWeb} from "../../../shared/constants-web";
 import {Ping} from "../../../beam-bots-shared/communication-objects/client-to-server/ping";
 import {Pong} from "../../../beam-bots-shared/communication-objects/server-to-client/pong";
@@ -24,7 +23,6 @@ export class PlayerState {
     public static initialize(socket: Socket): void {
         this.allPlayers = [];
         this.socket = socket;
-        HelperWebFunctions.initialize();
         SceneController.initialize();
         this.pingDiv = document.getElementById("ping") as HTMLDivElement;
         this.statsDiv = document.getElementById("stats") as HTMLDivElement;

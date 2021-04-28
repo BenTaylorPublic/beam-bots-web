@@ -17,4 +17,7 @@ export class ConstantsWeb {
     public static YELLOW: string = "#ECD616";
     public static ORANGE: string = "#D96207";
     public static BROWN: string = "#895443";
+
+    //Scenes
+    public static MG_ICECIRCLE_DRAW_ELLIPSE: boolean = false;
 }

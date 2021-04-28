@@ -7,15 +7,19 @@ import {
 import {SetMinigameIceCircleScene} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-ice-circle/set-minigame-ice-circle-scene";
 import {
     MgIceCircleAccelerationDirection,
+    MgIceCircleGameState,
     PlayerInfoMgIceCircle
 } from "../../../../beam-bots-shared/scene-interfaces/minigame-ice-circle-interfaces";
-import {Point2D} from "../../../../beam-bots-shared/interfaces";
+import {Player, Point2D} from "../../../../beam-bots-shared/interfaces";
 import {PlayerState} from "../player-state";
 import {MinigameIceCircleDirectionChange} from "../../../../beam-bots-shared/communication-objects/client-to-server/minigame-ice-circle/minigame-ice-circle-direction-change";
 import {MinigameIceCircleUpdate} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-ice-circle/minigame-ice-circle-update";
 import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
 import {HelperSharedFunctions} from "../../../../beam-bots-shared/helper-shared-functions";
 import {KeybindsController} from "../keybinds-controller";
+import {ConstantsWeb} from "../../../../shared/constants-web";
+import {MinigameIceCircleWinner} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-ice-circle/minigame-ice-circle-winner";
+import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 
 export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
@@ -25,11 +29,16 @@ export class MinigameIceCircle extends IGameScene {
     private lastUpdate: number;
     private localPlayerRadius: number;
     private circleCenter: Point2D;
-    private circleRadius: number;
+    private circleHorizontalRadius: number;
+    private circleVerticalRadius: number;
     private wStatus: KeyboardEventKeyState;
     private aStatus: KeyboardEventKeyState;
     private sStatus: KeyboardEventKeyState;
     private dStatus: KeyboardEventKeyState;
+    private gameState: MgIceCircleGameState;
+    private startTime: number;
+    private winningPlayer: Player | null;
+    private countdownText: 4 | 3 | 2 | 1 | 0 | -1;
 
     constructor(setMinigameIceCircleScene: SetMinigameIceCircleScene) {
         super();
@@ -38,16 +47,24 @@ export class MinigameIceCircle extends IGameScene {
         this.sStatus = "UP";
         this.dStatus = "UP";
         this.lastUpdate = Date.now();
-        this.context.font = "50px monospace";
+        this.winningPlayer = setMinigameIceCircleScene.winner;
         this.acceleration = setMinigameIceCircleScene.acceleration;
         this.playersFromServer = setMinigameIceCircleScene.players;
+        this.gameState = setMinigameIceCircleScene.gameState;
+        this.startTime = setMinigameIceCircleScene.startTime;
+        if (this.gameState === "countdown") {
+            this.countdownText = 4;
+        } else {
+            this.countdownText = -1;
+        }
         this.playersLocally = [];
         for (let i: number = 0; i < this.playersFromServer.length; i++) {
             this.playersLocally.push(this.clonePlayerInfo(this.playersFromServer[i]));
         }
-        this.circleCenter = HelperWebFunctions.convertGameLogicCoordsToLocalCoords(setMinigameIceCircleScene.circleCenter);
-        this.circleRadius = HelperWebFunctions.convertGameLogicPixelsToLocalPixels(setMinigameIceCircleScene.circleRadius);
-        this.localPlayerRadius = HelperWebFunctions.convertGameLogicPixelsToLocalPixels(setMinigameIceCircleScene.playerHitBoxRadius);
+        this.circleCenter = setMinigameIceCircleScene.circleCenter;
+        this.circleVerticalRadius = setMinigameIceCircleScene.circleVerticalRadius;
+        this.circleHorizontalRadius = setMinigameIceCircleScene.circleHorizontalRadius;
+        this.localPlayerRadius = setMinigameIceCircleScene.playerHitBoxRadius;
         this.background.style.backgroundImage = "url('/assets/ice_circle_bg.png')";
         KeybindsController.registerKeyCallback("w", this.wKeyEvent.bind(this));
         KeybindsController.registerKeyCallback("a", this.aKeyEvent.bind(this));
@@ -61,6 +78,9 @@ export class MinigameIceCircle extends IGameScene {
         switch (type) {
             case "MinigameIceCircleUpdate":
                 this.updateReceived(communicationTypeAndObject.object as MinigameIceCircleUpdate);
+                break;
+            case "MinigameIceCircleWinner":
+                this.winnerReceived(communicationTypeAndObject.object as MinigameIceCircleWinner);
                 break;
             default:
                 this.failedToHandleCommunication(communicationTypeAndObject);
@@ -89,25 +109,97 @@ export class MinigameIceCircle extends IGameScene {
     }
 
     protected loop(ms: number): void {
-        this.context.fillStyle = "transparent";
-        this.context.beginPath();
-        this.context.arc(this.circleCenter.x, this.circleCenter.y, this.circleRadius, 0, 2 * Math.PI);
-        this.context.lineWidth = 2;
-        this.context.strokeStyle = "#FF0000";
-        this.context.stroke();
+        let updatePositions: boolean = this.gameState === "in progress";
+        if (!updatePositions &&
+            this.gameState === "countdown" &&
+            Date.now() >= this.startTime) {
+            this.gameState = "in progress";
+            updatePositions = true;
+        }
+        if (ConstantsWeb.MG_ICECIRCLE_DRAW_ELLIPSE) {
+            this.context.fillStyle = "transparent";
+            this.context.beginPath();
+            this.context.ellipse(this.circleCenter.x, this.circleCenter.y, this.circleHorizontalRadius, this.circleVerticalRadius, 0, 0, 2 * Math.PI);
+            this.context.lineWidth = 10;
+            this.context.strokeStyle = "#FF0000";
+            this.context.stroke();
+        }
         const accelerationToAdd: number = this.acceleration / (1000 / ms);
 
         for (let i: number = 0; i < this.playersLocally.length; i++) {
-            //Work out players velocity
             const playerInfo: PlayerInfoMgIceCircle = this.playersLocally[i];
-            HelperSharedFunctions.mgIceCircleAddAcceleration(playerInfo, accelerationToAdd);
-            HelperSharedFunctions.mgIceCircleCalculateNewPosition(playerInfo, ms);
+            if (playerInfo.status === "dead") {
+                continue;
+            }
+            if (updatePositions) {
+                HelperSharedFunctions.mgIceCircleAddAcceleration(playerInfo, accelerationToAdd);
+                HelperSharedFunctions.mgIceCircleCalculateNewPosition(playerInfo, ms);
+            }
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInfo.player.color);
             this.context.beginPath();
-            const localPath: Point2D = HelperWebFunctions.convertGameLogicCoordsToLocalCoords(playerInfo.location);
-            this.context.arc(localPath.x, localPath.y, this.localPlayerRadius, 0, 2 * Math.PI);
+            this.context.arc(playerInfo.location.x, playerInfo.location.y, this.localPlayerRadius, 0, 2 * Math.PI);
             this.context.fill();
         }
+        if (this.gameState === "winner") {
+            //Drawing winner popup
+            let backgroundColor: string;
+            let textColor: string;
+            let text: string;
+            if (this.winningPlayer != null) {
+                backgroundColor = HelperWebFunctions.convertColorToHexcode(this.winningPlayer.color);
+                textColor = "#000000";
+                text = `${this.winningPlayer.name} wins!`;
+            } else {
+                backgroundColor = "#333333";
+                textColor = "#FFFFFF";
+                text = "Draw!";
+            }
+            this.context.font = "170px monospace";
+            this.context.fillStyle = backgroundColor;
+            this.context.fillRect(0, 600, Sconstants.GAME_LOGIC_WIDTH, 230);
+            this.context.fillStyle = textColor;
+            this.context.textAlign = "center";
+            this.context.fillText(text, Sconstants.GAME_LOGIC_WIDTH / 2, 770);
+        }
+        if (this.countdownText !== -1) {
+            const now: number = Date.now();
+            let playSound: boolean = false;
+            const timeDifference: number = this.startTime - now;
+            const timeToCompareTo: number = (this.countdownText * 1_000) - 1_000;
+            if (timeDifference < timeToCompareTo) {
+                playSound = true;
+                this.countdownText--;
+            }
+            if (this.countdownText !== -1 && this.countdownText !== 4) {
+                let color: string = "#000000";
+                switch (this.countdownText) {
+                    case 3:
+                        color = ConstantsWeb.RED;
+                        break;
+                    case 2:
+                        color = ConstantsWeb.ORANGE;
+                        break;
+                    case 1:
+                        color = ConstantsWeb.YELLOW;
+                        break;
+                    case 0:
+                        color = ConstantsWeb.GREEN;
+                        break;
+                }
+                this.context.font = "170px monospace";
+                this.context.fillStyle = color;
+                this.context.fillRect(1080, 100, 400, 230);
+                this.context.fillStyle = "#000000";
+                this.context.textAlign = "center";
+                const text: string = this.countdownText === 0 ? "GO!" : this.countdownText.toString();
+                this.context.fillText(text, Sconstants.GAME_LOGIC_WIDTH / 2, 270);
+            }
+        }
+    }
+
+    private winnerReceived(minigameIceCircleWinner: MinigameIceCircleWinner): void {
+        this.gameState = "winner";
+        this.winningPlayer = minigameIceCircleWinner.winner;
     }
 
     private updateReceived(update: MinigameIceCircleUpdate): void {

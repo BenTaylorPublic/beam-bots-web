@@ -7,15 +7,23 @@ import {
 import {PlayerState} from "../player-state";
 import {ConstantsWeb} from "../../../../shared/constants-web";
 import {LobbyStartButtonClicked} from "../../../../beam-bots-shared/communication-objects/client-to-server/lobby/lobby-start-button-clicked";
+import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 
 export class Lobby extends IGameScene {
     public name: GameScenes = "Lobby";
+    private logo: HTMLImageElement | null;
 
     constructor() {
         super();
         this.background.style.backgroundColor = "black";
-        this.context.font = "50px monospace";
+        this.context.font = "170px monospace";
         this.setupOverlay();
+        this.logo = null;
+        const logoAsImage: HTMLImageElement = new Image();
+        logoAsImage.onload = () => {
+            this.logo = logoAsImage;
+        };
+        logoAsImage.src = "/assets/logo.png";
     }
 
     public handleCommunication(
@@ -29,9 +37,13 @@ export class Lobby extends IGameScene {
     }
 
     protected loop(ms: number): void {
+        if (this.logo != null) {
+            const x: number = Sconstants.GAME_LOGIC_WIDTH - this.logo.width;
+            this.context.drawImage(this.logo, x, 0, this.logo.width, this.logo.height);
+        }
         for (let i: number = 0; i < PlayerState.allPlayers.length; i++) {
             this.context.fillStyle = this.convertColorToHex(PlayerState.allPlayers[i].color);
-            this.context.fillText(PlayerState.allPlayers[i].name, 0, (i + 1) * 50);
+            this.context.fillText(PlayerState.allPlayers[i].name, 0, (i + 1) * 170);
         }
 
     }

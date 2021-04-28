@@ -1,25 +1,7 @@
-import {Point2D} from "../beam-bots-shared/interfaces";
-import {Sconstants} from "../beam-bots-shared/sconstants";
 import {ConstantsWeb} from "./constants-web";
 import {PlayerColors} from "../beam-bots-shared/types";
 
 export class HelperWebFunctions {
-    private static conversionRateForCoords: number;
-
-    public static initialize(): void {
-        this.conversionRateForCoords = ConstantsWeb.CANVAS_HEIGHT / Sconstants.GAME_LOGIC_HEIGHT;
-    }
-
-    public static convertGameLogicCoordsToLocalCoords(originalPoint: Point2D): Point2D {
-        return {
-            x: Math.floor(originalPoint.x * this.conversionRateForCoords),
-            y: Math.floor(originalPoint.y * this.conversionRateForCoords)
-        };
-    }
-
-    public static convertGameLogicPixelsToLocalPixels(pixels: number): number {
-        return Math.floor(pixels * this.conversionRateForCoords);
-    }
 
     public static async delay(ms: number): Promise<void> {
         await new Promise(resolve => setTimeout(() => resolve(1), ms));
