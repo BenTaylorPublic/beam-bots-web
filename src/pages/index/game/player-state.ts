@@ -95,6 +95,8 @@ export class PlayerState {
     }
 
     private static serverToClientHello(hello: ServerToClientHello): void {
-        this.statsDiv.innerHTML = `Client v${ConstantsWeb.VERSION}<br/>Server v${hello.serverVersion}`;
+        if (ConstantsWeb.BOTTOM_VERSIONS_ENABLED) {
+            this.statsDiv.innerHTML = `Client v${ConstantsWeb.VERSION}<br/>Server v${hello.serverVersion}`;
+        }
     }
 }

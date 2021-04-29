@@ -2,11 +2,12 @@ export class ConstantsWeb {
     public static VERSION: string = "0.1.0";
 
     //Run settings
-    public static CANVAS_WIDTH: number = 800;
-    public static CANVAS_HEIGHT: number = 450;
+    public static CANVAS_WIDTH: number = 1920;
+    public static CANVAS_HEIGHT: number = 1080;
     public static TICK_DELAY: number = 10;
     public static PING_FREQUENCY: number = 2_000;
     public static BOTTOM_RIGHT_STATS_ENABLED: boolean = true;
+    public static BOTTOM_VERSIONS_ENABLED: boolean = false;
 
     //Colors
     public static BLUE: string = "#008FD0";
