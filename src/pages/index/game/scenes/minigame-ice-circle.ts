@@ -42,16 +42,16 @@ export class MinigameIceCircle extends IGameScene {
 
     constructor(setMinigameIceCircleScene: SetMinigameIceCircleScene) {
         super();
+        this.lastUpdate = Date.now();
+        this.startTime = this.lastUpdate + Sconstants.MG_ICECIRCLE_COUNTDOWN_DELAY;
         this.wStatus = "UP";
         this.aStatus = "UP";
         this.sStatus = "UP";
         this.dStatus = "UP";
-        this.lastUpdate = Date.now();
         this.winningPlayer = setMinigameIceCircleScene.winner;
         this.acceleration = setMinigameIceCircleScene.acceleration;
         this.playersFromServer = setMinigameIceCircleScene.players;
         this.gameState = setMinigameIceCircleScene.gameState;
-        this.startTime = setMinigameIceCircleScene.startTime;
         if (this.gameState === "countdown") {
             this.countdownText = 4;
         } else {
