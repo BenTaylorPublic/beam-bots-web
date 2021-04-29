@@ -15,8 +15,8 @@ import {ServerToClientHello} from "../../../beam-bots-shared/communication-objec
 
 export class PlayerState {
     public static allPlayers: Player[];
+    public static player: Player;
     private static socket: Socket;
-    private static player: Player;
     private static pingDiv: HTMLDivElement;
     private static statsDiv: HTMLDivElement;
 
