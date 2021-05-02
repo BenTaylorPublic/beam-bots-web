@@ -52,7 +52,7 @@ class SettingsView {
         localStorage.setItem("password", this.password.value);
         localStorage.setItem("username", this.username.value);
         alert("Success, redirecting you to index");
-        location.href = "/";
+        location.href = "/beam-bots";
     }
 
     private static testConnectionResultError(): void {
