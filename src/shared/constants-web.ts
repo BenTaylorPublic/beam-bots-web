@@ -1,5 +1,6 @@
 export class ConstantsWeb {
     public static VERSION: string = "0.1.0";
+    public static USE_HTTPS_SERVER: boolean = true;
 
     //Run settings
     public static CANVAS_WIDTH: number = 1920;

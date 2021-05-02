@@ -1,9 +1,9 @@
 import {HttpService} from "../../shared/services/http-service";
 import {ErrorService} from "../../shared/services/error-service";
+import {ConstantsWeb} from "../../shared/constants-web";
 
 class SettingsView {
-    private static serverIp: HTMLInputElement;
-    private static serverPort: HTMLInputElement;
+    private static serverUrl: HTMLInputElement;
     private static password: HTMLInputElement;
     private static username: HTMLInputElement;
     private static testConnectionButton: HTMLButtonElement;
@@ -12,13 +12,16 @@ class SettingsView {
         this.getDomElements();
         this.addEventListeners();
         this.getValuesFromStorage();
+
+        if (ConstantsWeb.USE_HTTPS_SERVER) {
+            this.serverUrl.value = HttpService.serverUrl;
+            this.serverUrl.disabled = true;
+        }
     }
 
     private static getValuesFromStorage(): void {
-        let value: string | null = localStorage.getItem("serverIp");
-        this.serverIp.value = value == null ? "" : value;
-        value = localStorage.getItem("serverPort");
-        this.serverPort.value = value == null ? "" : value;
+        let value: string | null = localStorage.getItem("serverUrl");
+        this.serverUrl.value = value == null ? "" : value;
         value = localStorage.getItem("password");
         this.password.value = value == null ? "" : value;
         value = localStorage.getItem("username");
@@ -26,8 +29,7 @@ class SettingsView {
     }
 
     private static getDomElements(): void {
-        this.serverIp = document.getElementById("serverIp") as HTMLInputElement;
-        this.serverPort = document.getElementById("serverPort") as HTMLInputElement;
+        this.serverUrl = document.getElementById("serverUrl") as HTMLInputElement;
         this.password = document.getElementById("password") as HTMLInputElement;
         this.username = document.getElementById("username") as HTMLInputElement;
         this.testConnectionButton = document.getElementById("testConnectionButton") as HTMLButtonElement;
@@ -42,17 +44,23 @@ class SettingsView {
         if (lettersRegex.test(this.username.value)) {
             throw ErrorService.error(1001, "Only A-Z in your name please");
         }
-        const url: string = `http://${this.serverIp.value}:${this.serverPort.value}/test-connection/${this.username.value}`;
+        if (!ConstantsWeb.USE_HTTPS_SERVER) {
+            localStorage.setItem("serverUrl", this.serverUrl.value);
+        }
+        localStorage.setItem("password", this.password.value);
+        HttpService.initialize();
+        const url: string = `/test-connection/${this.username.value}`;
         HttpService.get(url, this.password.value, this.testConnectionResultSuccess.bind(this), this.testConnectionResultError.bind(this));
     }
 
     private static testConnectionResultSuccess(): void {
-        localStorage.setItem("serverIp", this.serverIp.value);
-        localStorage.setItem("serverPort", this.serverPort.value);
-        localStorage.setItem("password", this.password.value);
         localStorage.setItem("username", this.username.value);
         alert("Success, redirecting you to index");
-        location.href = "/beam-bots";
+        if (ConstantsWeb.USE_HTTPS_SERVER) {
+            location.href = "/beam-bots";
+        } else {
+            location.href = "/";
+        }
     }
 
     private static testConnectionResultError(): void {

@@ -5,7 +5,7 @@ export class ErrorService {
     public static error(code: number, message: string): string {
 
         try {
-            const url: string = `http://${localStorage.getItem("serverIp")}:${localStorage.getItem("serverPort")}/error-service/${code}`;
+            const url: string = `/error-service/${code}`;
             HttpService.post(url, () => {
             }, () => {
             });
