@@ -23,7 +23,7 @@ export class Lobby extends IGameScene {
         logoAsImage.onload = () => {
             this.logo = logoAsImage;
         };
-        logoAsImage.src = "/assets/logo.png";
+        logoAsImage.src = "/beam-bots/assets/logo.png";
     }
 
     public handleCommunication(

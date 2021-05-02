@@ -1,4 +1,5 @@
 {
+  "bengularVersion": "v1.2.0",
   "verbose": false,
   "pagesDirectory": "./src/pages/",
   "srcDirectory": "./src/",
@@ -6,5 +7,6 @@
   "prodDirectory": "./docs/",
   "componentsDirectory": "./src/components/",
   "assetsDirectory": "./src/assets/",
-  "bengularVersion": "v1.1.2"
+  "hostedPath": "/beam-bots/",
+  "rootHtml": "/beam-bots/index.html"
 }

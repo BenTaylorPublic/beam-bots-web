@@ -65,7 +65,7 @@ export class MinigameIceCircle extends IGameScene {
         this.circleVerticalRadius = setMinigameIceCircleScene.circleVerticalRadius;
         this.circleHorizontalRadius = setMinigameIceCircleScene.circleHorizontalRadius;
         this.localPlayerRadius = setMinigameIceCircleScene.playerHitBoxRadius;
-        this.background.style.backgroundImage = "url('/assets/ice_circle_bg.png')";
+        this.background.style.backgroundImage = "url('/beam-bots/assets/ice_circle_bg.png')";
         KeybindsController.registerKeyCallback("w", this.wKeyEvent.bind(this));
         KeybindsController.registerKeyCallback("a", this.aKeyEvent.bind(this));
         KeybindsController.registerKeyCallback("s", this.sKeyEvent.bind(this));
