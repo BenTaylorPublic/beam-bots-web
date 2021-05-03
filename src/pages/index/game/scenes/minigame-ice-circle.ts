@@ -177,7 +177,7 @@ export class MinigameIceCircle extends IGameScene {
             if (timeDifference < timeToCompareTo) {
                 this.countdownText--;
                 //TODO: Change to a countdown sound
-                AudioController.playAudio("falling");
+                AudioController.playAudio("collision");
             }
             if (this.countdownText !== -1 && this.countdownText !== 4) {
                 let color: string = "#000000";
