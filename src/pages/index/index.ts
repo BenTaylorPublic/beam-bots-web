@@ -61,6 +61,12 @@ class IndexView {
             canvasWidth = width;
             canvasHeight = Math.ceil(width * (9 / 16));
         }
+        if (canvasHeight < ConstantsWeb.MINIMUM_CANVAS_HEIGHT) {
+            canvasHeight = ConstantsWeb.MINIMUM_CANVAS_HEIGHT;
+        }
+        if (canvasWidth < ConstantsWeb.MINIMUM_CANVAS_WIDTH) {
+            canvasWidth = ConstantsWeb.MINIMUM_CANVAS_WIDTH;
+        }
 
         const canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
         canvas.height = canvasHeight;

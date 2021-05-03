@@ -5,6 +5,8 @@ export class ConstantsWeb {
     //Run settings
     public static TICK_DELAY: number = 10;
     public static PING_FREQUENCY: number = 2_000;
+    public static MINIMUM_CANVAS_WIDTH: number = 640;
+    public static MINIMUM_CANVAS_HEIGHT: number = 360;
 
     //Colors
     public static BLUE: string = "#008FD0";
