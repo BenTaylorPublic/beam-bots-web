@@ -1,5 +1,4 @@
 import {Sconstants} from "../../../beam-bots-shared/sconstants";
-import {ConstantsWeb} from "../../../shared/constants-web";
 
 export class CanvasContextWrapper {
     private context: CanvasRenderingContext2D;
@@ -9,7 +8,7 @@ export class CanvasContextWrapper {
         this.canvas = canvas;
         this.context = context;
         this.context.setTransform(1, 0, 0, 1, 0, 0);
-        this.context.scale(ConstantsWeb.CANVAS_HEIGHT / Sconstants.GAME_LOGIC_HEIGHT, ConstantsWeb.CANVAS_HEIGHT / Sconstants.GAME_LOGIC_HEIGHT);
+        this.context.scale(this.canvas.height / Sconstants.GAME_LOGIC_HEIGHT, this.canvas.height / Sconstants.GAME_LOGIC_HEIGHT);
     }
 
     public clear(): void {

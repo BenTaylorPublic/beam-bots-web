@@ -3,8 +3,6 @@ export class ConstantsWeb {
     public static USE_HTTPS_SERVER: boolean = true;
 
     //Run settings
-    public static CANVAS_WIDTH: number = 1920;
-    public static CANVAS_HEIGHT: number = 1080;
     public static TICK_DELAY: number = 10;
     public static PING_FREQUENCY: number = 2_000;
 

@@ -44,10 +44,28 @@ class IndexView {
     }
 
     private static setupDom(): void {
+        const body: HTMLElement = document.body;
+        const html: HTMLElement = document.documentElement;
+
+        const height: number = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+        const width: number = Math.max(body.scrollWidth, body.offsetWidth, html.clientWidth, html.scrollWidth, html.offsetWidth);
+
+        let canvasWidth: number = 0;
+        let canvasHeight: number = 0;
+        if (width / height > 16 / 9) {
+            //Width is highest, so it'll be pillar boxed
+            canvasHeight = height;
+            canvasWidth = Math.ceil(height * (16 / 9));
+        } else {
+            //Height is highest, so it'll be letter boxed
+            canvasWidth = width;
+            canvasHeight = Math.ceil(width * (9 / 16));
+        }
+
         const canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
-        canvas.height = ConstantsWeb.CANVAS_HEIGHT;
+        canvas.height = canvasHeight;
         canvas.style.height = `${canvas.height}px`;
-        canvas.width = ConstantsWeb.CANVAS_WIDTH;
+        canvas.width = canvasWidth;
         canvas.style.width = `${canvas.width}px`;
 
         const overlay: HTMLDivElement = document.getElementById("overlay") as HTMLDivElement;
