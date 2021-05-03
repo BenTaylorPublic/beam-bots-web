@@ -7,8 +7,6 @@ export class ConstantsWeb {
     public static CANVAS_HEIGHT: number = 1080;
     public static TICK_DELAY: number = 10;
     public static PING_FREQUENCY: number = 2_000;
-    public static BOTTOM_RIGHT_STATS_ENABLED: boolean = true;
-    public static BOTTOM_VERSIONS_ENABLED: boolean = false;
 
     //Colors
     public static BLUE: string = "#008FD0";

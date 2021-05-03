@@ -8,12 +8,17 @@ import {HttpService} from "../../shared/services/http-service";
 import DisconnectReason = Socket.DisconnectReason;
 
 class IndexView {
+    private static escapeMenu: HTMLDivElement;
+    private static escapeMenuShowing: boolean;
 
     public static initialize(): void {
+        this.escapeMenuShowing = false;
+
         HttpService.initialize();
         this.setupSocket();
         this.setupDom();
         KeybindsController.initialize();
+        KeybindsController.registerKeyCallback("escape", this.toggleEscapeMenu.bind(this));
     }
 
     private static setupSocket(): void {
@@ -52,8 +57,28 @@ class IndexView {
         const background: HTMLDivElement = document.getElementById("background") as HTMLDivElement;
         background.style.height = `${canvas.height}px`;
         background.style.width = `${canvas.width}px`;
+
+        const escapeMenu: HTMLDivElement = document.getElementById("escapeMenu") as HTMLDivElement;
+        escapeMenu.style.height = `${canvas.height}px`;
+        escapeMenu.style.width = `${canvas.width}px`;
+
+        const clientVersionDiv: HTMLDivElement = document.getElementById("clientVersion") as HTMLDivElement;
+        clientVersionDiv.innerText = `Client v${ConstantsWeb.VERSION}`;
+
+        this.escapeMenu = document.getElementById("escapeMenu") as HTMLDivElement;
     }
 
+    private static toggleEscapeMenu(data: KeyboardEventKeyState): void {
+        if (data === "DOWN") {
+            if (this.escapeMenuShowing) {
+                this.escapeMenuShowing = false;
+                this.escapeMenu.classList.add("displayNone");
+            } else {
+                this.escapeMenuShowing = true;
+                this.escapeMenu.classList.remove("displayNone");
+            }
+        }
+    }
 }
 
 IndexView.initialize();

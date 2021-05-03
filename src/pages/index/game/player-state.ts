@@ -18,19 +18,13 @@ export class PlayerState {
     public static player: Player;
     private static socket: Socket;
     private static pingDiv: HTMLDivElement;
-    private static statsDiv: HTMLDivElement;
 
     public static initialize(socket: Socket): void {
         this.allPlayers = [];
         this.socket = socket;
         SceneController.initialize();
         this.pingDiv = document.getElementById("ping") as HTMLDivElement;
-        this.statsDiv = document.getElementById("stats") as HTMLDivElement;
-        if (ConstantsWeb.BOTTOM_RIGHT_STATS_ENABLED) {
-            this.startPinging();
-        } else {
-            (document.getElementById("bottomRightStats") as HTMLDivElement).style.display = "none";
-        }
+        this.startPinging();
     }
 
     public static handleCommunication(communicationTypeAndObject: CommunicationTypeAndObject): void {
@@ -95,8 +89,7 @@ export class PlayerState {
     }
 
     private static serverToClientHello(hello: ServerToClientHello): void {
-        if (ConstantsWeb.BOTTOM_VERSIONS_ENABLED) {
-            this.statsDiv.innerHTML = `Client v${ConstantsWeb.VERSION}<br/>Server v${hello.serverVersion}`;
-        }
+        const serverVersionDiv: HTMLDivElement = document.getElementById("serverVersion") as HTMLDivElement;
+        serverVersionDiv.innerText = `Server v${hello.serverVersion}`;
     }
 }
