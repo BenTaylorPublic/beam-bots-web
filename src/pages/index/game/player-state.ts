@@ -12,18 +12,17 @@ import {ConstantsWeb} from "../../../shared/constants-web";
 import {Ping} from "../../../beam-bots-shared/communication-objects/client-to-server/ping";
 import {Pong} from "../../../beam-bots-shared/communication-objects/server-to-client/pong";
 import {ServerToClientHello} from "../../../beam-bots-shared/communication-objects/server-to-client/server-to-client-hello";
+import {IndexView} from "../index";
 
 export class PlayerState {
     public static allPlayers: Player[];
     public static player: Player;
     private static socket: Socket;
-    private static pingDiv: HTMLDivElement;
 
     public static initialize(socket: Socket): void {
         this.allPlayers = [];
         this.socket = socket;
         SceneController.initialize();
-        this.pingDiv = document.getElementById("ping") as HTMLDivElement;
         this.startPinging();
     }
 
@@ -85,7 +84,7 @@ export class PlayerState {
     }
 
     private static pong(pong: Pong): void {
-        this.pingDiv.innerText = `Ping: ${Date.now() - pong.startTime}ms`;
+        IndexView.pingDiv.innerText = `Ping: ${Date.now() - pong.startTime}ms`;
     }
 
     private static serverToClientHello(hello: ServerToClientHello): void {

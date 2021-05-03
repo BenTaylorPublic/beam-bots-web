@@ -7,8 +7,10 @@ import {KeybindsController} from "./game/keybinds-controller";
 import {HttpService} from "../../shared/services/http-service";
 import DisconnectReason = Socket.DisconnectReason;
 
-class IndexView {
+export class IndexView {
+    public static pingDiv: HTMLDivElement;
     private static escapeMenu: HTMLDivElement;
+    private static showPingCheckbox: HTMLInputElement;
     private static escapeMenuShowing: boolean;
 
     public static initialize(): void {
@@ -90,6 +92,17 @@ class IndexView {
         clientVersionDiv.innerText = `Client v${ConstantsWeb.VERSION}`;
 
         this.escapeMenu = document.getElementById("escapeMenu") as HTMLDivElement;
+        this.showPingCheckbox = document.getElementById("showPing") as HTMLInputElement;
+        this.showPingCheckbox.onchange = this.toggleShowPing.bind(this);
+        this.pingDiv = document.getElementById("ping") as HTMLDivElement;
+        const showPing: string | null = localStorage.getItem("showPing");
+        if (showPing === "true") {
+            this.showPingCheckbox.checked = true;
+            this.pingDiv.classList.remove("displayNone");
+        } else {
+            this.showPingCheckbox.checked = false;
+            this.pingDiv.classList.add("displayNone");
+        }
     }
 
     private static toggleEscapeMenu(data: KeyboardEventKeyState): void {
@@ -101,6 +114,16 @@ class IndexView {
                 this.escapeMenuShowing = true;
                 this.escapeMenu.classList.remove("displayNone");
             }
+        }
+    }
+
+    private static toggleShowPing(): void {
+        if (this.showPingCheckbox.checked) {
+            localStorage.setItem("showPing", "true");
+            this.pingDiv.classList.remove("displayNone");
+        } else {
+            localStorage.setItem("showPing", "false");
+            this.pingDiv.classList.add("displayNone");
         }
     }
 }

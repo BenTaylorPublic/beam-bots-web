@@ -11,10 +11,29 @@
   bottom: 0;
 }
 
-#bottomRightStats {
+#ping {
   position: absolute;
   bottom: 10px;
   right: 10px;
   padding: 10px;
   background-color: #333333;
+}
+
+#escapeMenu {
+  background-color: fade-out(black, 0.2);
+
+  #content {
+    background-color: #111111;
+    text-align: center;
+    border: 1px solid white;
+    border-radius: 5px;
+    width: 240px;
+    height: 360px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    position: absolute;
+  }
 }
