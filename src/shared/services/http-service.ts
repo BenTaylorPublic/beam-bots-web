@@ -6,10 +6,10 @@ export class HttpService {
     private static httpServerPath: string = "/beam-bots-server";
     private static password: string;
 
-    public static initialize(): void {
+    public static initialize(onSettings: boolean = false): void {
         if (ConstantsWeb.USE_HTTPS_SERVER) {
             this.serverUrl = "https://bentaylor.dev";
-        } else {
+        } else if (!onSettings) {
             const serverUrl: string | null = localStorage.getItem("serverUrl");
             const password: string | null = localStorage.getItem("password");
             if (serverUrl == null) {
@@ -21,6 +21,10 @@ export class HttpService {
             this.serverUrl = serverUrl;
             this.password = password;
         }
+    }
+
+    public static setPassword(password: string): void {
+        this.password = password;
     }
 
     public static get<T>(url: string, password: string, successCallback: TCallback<T> | VoidCallback, errorCallback: VoidCallback | null = null): void {

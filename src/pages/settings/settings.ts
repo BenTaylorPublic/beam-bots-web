@@ -9,6 +9,7 @@ class SettingsView {
     private static testConnectionButton: HTMLButtonElement;
 
     public static initialize(): void {
+        HttpService.initialize(true);
         this.getDomElements();
         this.addEventListeners();
         this.getValuesFromStorage();
@@ -48,7 +49,7 @@ class SettingsView {
             localStorage.setItem("serverUrl", this.serverUrl.value);
         }
         localStorage.setItem("password", this.password.value);
-        HttpService.initialize();
+        HttpService.setPassword(this.password.value);
         const url: string = `/test-connection/${this.username.value}`;
         HttpService.get(url, this.password.value, this.testConnectionResultSuccess.bind(this), this.testConnectionResultError.bind(this));
     }
