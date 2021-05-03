@@ -8,7 +8,7 @@ import {SetMinigameIceCircleScene} from "../../../../beam-bots-shared/communicat
 import {
     MgIceCircleAccelerationDirection,
     MgIceCircleGameState,
-    PlayerInfoMgIceCircle
+    MgIceCirclePlayerInfo
 } from "../../../../beam-bots-shared/scene-interfaces/minigame-ice-circle-interfaces";
 import {Player, Point2D} from "../../../../beam-bots-shared/interfaces";
 import {PlayerState} from "../player-state";
@@ -25,8 +25,8 @@ import {AudioController} from "../audio-controller";
 export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
     private acceleration: number;
-    private playersFromServer: PlayerInfoMgIceCircle[];
-    private playersLocally: PlayerInfoMgIceCircle[];
+    private playersFromServer: MgIceCirclePlayerInfo[];
+    private playersLocally: MgIceCirclePlayerInfo[];
     private lastUpdate: number;
     private localPlayerRadius: number;
     private circleCenter: Point2D;
@@ -136,7 +136,7 @@ export class MinigameIceCircle extends IGameScene {
         const accelerationToAdd: number = this.acceleration / (1000 / ms);
 
         for (let i: number = 0; i < this.playersLocally.length; i++) {
-            const playerInfo: PlayerInfoMgIceCircle = this.playersLocally[i];
+            const playerInfo: MgIceCirclePlayerInfo = this.playersLocally[i];
             if (playerInfo.status === "dead") {
                 continue;
             }
@@ -220,8 +220,8 @@ export class MinigameIceCircle extends IGameScene {
         }
     }
 
-    private clonePlayerInfo(playerInfo: PlayerInfoMgIceCircle): PlayerInfoMgIceCircle {
-        const result: PlayerInfoMgIceCircle = {
+    private clonePlayerInfo(playerInfo: MgIceCirclePlayerInfo): MgIceCirclePlayerInfo {
+        const result: MgIceCirclePlayerInfo = {
             accelerationDirection: playerInfo.accelerationDirection,
             location: HelperSharedFunctions.clonePoint2D(playerInfo.location),
             player: playerInfo.player,
