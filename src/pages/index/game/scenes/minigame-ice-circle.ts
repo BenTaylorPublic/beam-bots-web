@@ -218,6 +218,12 @@ export class MinigameIceCircle extends IGameScene {
         for (let i: number = 0; i < this.playersFromServer.length; i++) {
             this.playersLocally.push(this.clonePlayerInfo(this.playersFromServer[i]));
         }
+
+        if (update.reasonForUpdate === "PlayerFell") {
+            AudioController.playAudio("falling");
+        } else if (update.reasonForUpdate === "Collision") {
+            AudioController.playAudio("collision");
+        }
     }
 
     private clonePlayerInfo(playerInfo: MgIceCirclePlayerInfo): MgIceCirclePlayerInfo {
