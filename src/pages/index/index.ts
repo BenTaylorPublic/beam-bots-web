@@ -91,6 +91,9 @@ export class IndexView {
         const clientVersionDiv: HTMLDivElement = document.getElementById("clientVersion") as HTMLDivElement;
         clientVersionDiv.innerText = `Client v${ConstantsWeb.VERSION}`;
 
+        const closeEscapeMenuButton: HTMLButtonElement = document.getElementById("escapeClose") as HTMLButtonElement;
+        closeEscapeMenuButton.onclick = this.closeEscapeMenu.bind(this);
+
         this.escapeMenu = document.getElementById("escapeMenu") as HTMLDivElement;
         this.showPingCheckbox = document.getElementById("showPing") as HTMLInputElement;
         this.showPingCheckbox.onchange = this.toggleShowPing.bind(this);
@@ -115,6 +118,11 @@ export class IndexView {
                 this.escapeMenu.classList.remove("displayNone");
             }
         }
+    }
+
+    private static closeEscapeMenu(): void {
+        this.escapeMenuShowing = false;
+        this.escapeMenu.classList.add("displayNone");
     }
 
     private static toggleShowPing(): void {
