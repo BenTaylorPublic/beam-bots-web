@@ -75,3 +75,14 @@ input[type=button], button {
 .displayNone {
   display: none;
 }
+
+a {
+  text-decoration: underline;
+
+  &:visited,
+  &:hover,
+  &:active,
+  &:link {
+    color: white;
+  }
+}

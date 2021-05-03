@@ -28,13 +28,18 @@
     border: 1px solid white;
     border-radius: 5px;
     width: 240px;
-    height: 360px;
+    height: 190px;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
     margin: auto;
     position: absolute;
+
+    > * {
+      display: block;
+      margin-top: 10px;
+    }
 
     #escapeClose {
       bottom: 10px;

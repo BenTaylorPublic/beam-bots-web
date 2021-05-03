@@ -16,7 +16,14 @@ export class KeybindsController {
     }
 
     public static removeAllCallbacks(): void {
-        this.keysToCallbacks = {};
+        //Remove callbacks that aren't the escape menu
+        const keys: string[] = Object.keys(this.keysToCallbacks);
+        for (let i: number = 0; i < keys.length; i++) {
+            const key: string = keys[i];
+            if (key !== "escape") {
+                delete this.keysToCallbacks[key];
+            }
+        }
     }
 
     private static keyup(keyboardEvent: KeyboardEvent): void {
