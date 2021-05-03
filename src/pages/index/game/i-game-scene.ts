@@ -6,6 +6,7 @@ import {
 import {KeybindsController} from "./keybinds-controller";
 import {ConstantsWeb} from "../../../shared/constants-web";
 import {CanvasContextWrapper} from "./canvas-context-wrapper";
+import {AudioController} from "./audio-controller";
 
 export abstract class IGameScene {
     protected overlay: HTMLDivElement;
@@ -42,6 +43,7 @@ export abstract class IGameScene {
 
     public destroy(): void {
         KeybindsController.removeAllCallbacks();
+        AudioController.removeAllAudio();
         this.background.style.backgroundImage = "";
         this.overlay.innerHTML = "";
         this.context.clear();

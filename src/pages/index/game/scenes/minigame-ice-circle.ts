@@ -20,6 +20,7 @@ import {KeybindsController} from "../keybinds-controller";
 import {ConstantsWeb} from "../../../../shared/constants-web";
 import {MinigameIceCircleWinner} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-ice-circle/minigame-ice-circle-winner";
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
+import {AudioController} from "../audio-controller";
 
 export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
@@ -70,6 +71,14 @@ export class MinigameIceCircle extends IGameScene {
         KeybindsController.registerKeyCallback("a", this.aKeyEvent.bind(this));
         KeybindsController.registerKeyCallback("s", this.sKeyEvent.bind(this));
         KeybindsController.registerKeyCallback("d", this.dKeyEvent.bind(this));
+
+        AudioController.loadAudio([{
+            name: "falling",
+            url: "ice_circle_falling.wav"
+        }, {
+            name: "collision",
+            url: "ice_circle_collision.wav"
+        }]);
     }
 
     public handleCommunication(
@@ -163,12 +172,12 @@ export class MinigameIceCircle extends IGameScene {
         }
         if (this.countdownText !== -1) {
             const now: number = Date.now();
-            let playSound: boolean = false;
             const timeDifference: number = this.startTime - now;
             const timeToCompareTo: number = (this.countdownText * 1_000) - 1_000;
             if (timeDifference < timeToCompareTo) {
-                playSound = true;
                 this.countdownText--;
+                //TODO: Change to a countdown sound
+                AudioController.playAudio("falling");
             }
             if (this.countdownText !== -1 && this.countdownText !== 4) {
                 let color: string = "#000000";

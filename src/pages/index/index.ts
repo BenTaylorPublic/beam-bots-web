@@ -5,6 +5,7 @@ import {CommunicationTypeAndObject} from "../../beam-bots-shared/communication-o
 import {ConstantsWeb} from "../../shared/constants-web";
 import {KeybindsController} from "./game/keybinds-controller";
 import {HttpService} from "../../shared/services/http-service";
+import {AudioController} from "./game/audio-controller";
 import DisconnectReason = Socket.DisconnectReason;
 
 export class IndexView {
@@ -16,6 +17,7 @@ export class IndexView {
     public static initialize(): void {
         this.escapeMenuShowing = false;
 
+        AudioController.initialize();
         HttpService.initialize();
         this.setupSocket();
         this.setupDom();
