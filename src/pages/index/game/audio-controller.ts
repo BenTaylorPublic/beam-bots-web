@@ -32,6 +32,7 @@ export class AudioController {
                 return;
             }
         }
+        console.error(`Audio not found: ${name}`);
     }
 
     public static removeAllAudio(): void {

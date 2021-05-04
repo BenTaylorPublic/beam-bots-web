@@ -78,6 +78,9 @@ export class MinigameIceCircle extends IGameScene {
         }, {
             name: "collision",
             url: "ice_circle_collision.wav"
+        }, {
+            name: "countdown",
+            url: "ice_circle_countdown.wav"
         }]);
     }
 
@@ -176,9 +179,8 @@ export class MinigameIceCircle extends IGameScene {
             const timeToCompareTo: number = (this.countdownText * 1_000) - 1_000;
             if (timeDifference < timeToCompareTo) {
                 this.countdownText--;
-                if (this.countdownText !== -1) {
-                    //TODO: Change to a countdown sound
-                    AudioController.playAudio("collision");
+                if (this.countdownText === 3) {
+                    AudioController.playAudio("countdown");
                 }
             }
             if (this.countdownText !== -1 && this.countdownText !== 4) {
