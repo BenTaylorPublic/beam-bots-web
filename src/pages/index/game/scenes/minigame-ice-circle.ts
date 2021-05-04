@@ -21,6 +21,7 @@ import {ConstantsWeb} from "../../../../shared/constants-web";
 import {MinigameIceCircleWinner} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-ice-circle/minigame-ice-circle-winner";
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 import {AudioController} from "../audio-controller";
+import {SpriteSheet} from "../sprite-sheet";
 
 export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
@@ -40,6 +41,7 @@ export class MinigameIceCircle extends IGameScene {
     private startTime: number;
     private winningPlayer: Player | null;
     private countdownText: 4 | 3 | 2 | 1 | 0 | -1;
+    private spriteSheet: SpriteSheet | null;
 
     constructor(setMinigameIceCircleScene: SetMinigameIceCircleScene) {
         super();
@@ -82,6 +84,13 @@ export class MinigameIceCircle extends IGameScene {
             name: "countdown",
             url: "ice_circle_countdown.wav"
         }]);
+
+        this.spriteSheet = null;
+        const spriteSheetAsImage: HTMLImageElement = new Image();
+        spriteSheetAsImage.onload = () => {
+            this.spriteSheet = new SpriteSheet(spriteSheetAsImage, 8, 4);
+        };
+        spriteSheetAsImage.src = "/beam-bots/assets/images/ice_circle_character.png";
     }
 
     public handleCommunication(
@@ -151,6 +160,14 @@ export class MinigameIceCircle extends IGameScene {
             this.context.beginPath();
             this.context.arc(playerInfo.location.x, playerInfo.location.y, this.localPlayerRadius, 0, 2 * Math.PI);
             this.context.fill();
+
+            if (this.spriteSheet != null) {
+                const locationToDraw: Point2D = HelperSharedFunctions.subtract(playerInfo.location, {
+                    x: 65,
+                    y: 180
+                });
+                this.context.drawImageFromSpriteSheet(this.spriteSheet, {x: 0, y: 0}, locationToDraw, 7);
+            }
         }
         if (this.gameState === "winner") {
             //Drawing winner popup

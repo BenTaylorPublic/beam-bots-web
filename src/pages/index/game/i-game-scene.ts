@@ -23,6 +23,7 @@ export abstract class IGameScene {
         this.lastLoopTime = Date.now();
         const canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
         const context: CanvasRenderingContext2D = canvas.getContext("2d") as CanvasRenderingContext2D;
+        context.imageSmoothingEnabled = false;
         this.context = new CanvasContextWrapper(canvas, context);
     }
 
