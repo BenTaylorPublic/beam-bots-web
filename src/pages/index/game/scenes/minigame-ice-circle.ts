@@ -21,7 +21,7 @@ import {ConstantsWeb} from "../../../../shared/constants-web";
 import {MinigameIceCircleWinner} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-ice-circle/minigame-ice-circle-winner";
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 import {AudioController} from "../audio-controller";
-import {SpriteSheet} from "../sprite-sheet";
+import {AnimatedSpriteSheet} from "../animated-sprite-sheet";
 
 export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
@@ -41,7 +41,7 @@ export class MinigameIceCircle extends IGameScene {
     private startTime: number;
     private winningPlayer: Player | null;
     private countdownText: 4 | 3 | 2 | 1 | 0 | -1;
-    private spriteSheet: SpriteSheet | null;
+    private spriteSheet: AnimatedSpriteSheet | null;
 
     constructor(setMinigameIceCircleScene: SetMinigameIceCircleScene) {
         super();
@@ -88,7 +88,52 @@ export class MinigameIceCircle extends IGameScene {
         this.spriteSheet = null;
         const spriteSheetAsImage: HTMLImageElement = new Image();
         spriteSheetAsImage.onload = () => {
-            this.spriteSheet = new SpriteSheet(spriteSheetAsImage, 8, 4);
+            this.spriteSheet = new AnimatedSpriteSheet(spriteSheetAsImage, [{
+                name: "NOWHERE",
+                startRow: 0,
+                startColumn: 1,
+                amountOfFrames: 1,
+            }, {
+                name: "DOWN",
+                startRow: 0,
+                startColumn: 0,
+                amountOfFrames: 4,
+            }, {
+                name: "BOTTOM LEFT",
+                startRow: 1,
+                startColumn: 0,
+                amountOfFrames: 4,
+            }, {
+                name: "LEFT",
+                startRow: 2,
+                startColumn: 0,
+                amountOfFrames: 4,
+            }, {
+                name: "UP",
+                startRow: 3,
+                startColumn: 0,
+                amountOfFrames: 4,
+            }, {
+                name: "TOP LEFT",
+                startRow: 4,
+                startColumn: 0,
+                amountOfFrames: 4,
+            }, {
+                name: "TOP RIGHT",
+                startRow: 5,
+                startColumn: 0,
+                amountOfFrames: 4,
+            }, {
+                name: "RIGHT",
+                startRow: 6,
+                startColumn: 0,
+                amountOfFrames: 4,
+            }, {
+                name: "BOTTOM RIGHT",
+                startRow: 7,
+                startColumn: 0,
+                amountOfFrames: 4,
+            }], "NOWHERE", ConstantsWeb.MG_ICECIRCLE_ANIMATION_MS, 8, 4);
         };
         spriteSheetAsImage.src = "/beam-bots/assets/images/ice_circle_character.png";
     }
@@ -166,7 +211,7 @@ export class MinigameIceCircle extends IGameScene {
                     x: 65,
                     y: 180
                 });
-                this.context.drawImageFromSpriteSheet(this.spriteSheet, {x: 0, y: 0}, locationToDraw, 7);
+                this.context.drawImageFromAnimatedSpriteSheet(this.spriteSheet, locationToDraw, 7);
             }
         }
         if (this.gameState === "winner") {
@@ -238,6 +283,9 @@ export class MinigameIceCircle extends IGameScene {
         this.playersLocally = [];
         for (let i: number = 0; i < this.playersFromServer.length; i++) {
             this.playersLocally.push(this.clonePlayerInfo(this.playersFromServer[i]));
+            if (this.spriteSheet != null) {
+                this.spriteSheet.setNewState(this.playersLocally[0].accelerationDirection);
+            }
         }
 
         if (update.reasonForUpdate === "PlayerFell") {

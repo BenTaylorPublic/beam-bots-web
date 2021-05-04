@@ -1,6 +1,7 @@
 import {Sconstants} from "../../../beam-bots-shared/sconstants";
 import {SpriteSheet} from "./sprite-sheet";
 import {Point2D} from "../../../beam-bots-shared/interfaces";
+import {AnimatedSpriteSheet} from "./animated-sprite-sheet";
 
 export class CanvasContextWrapper {
     private context: CanvasRenderingContext2D;
@@ -52,6 +53,20 @@ export class CanvasContextWrapper {
             screenPoint.y,
             scale * spriteSheet.frameWidth,
             scale * spriteSheet.frameHeight);
+    }
+
+    //ass lol
+    public drawImageFromAnimatedSpriteSheet(ass: AnimatedSpriteSheet, screenPoint: Point2D, scale: number): void {
+        this.context.drawImage(
+            ass.image,
+            ass.xForCanvas,
+            ass.yForCanvas,
+            ass.frameWidth,
+            ass.frameHeight,
+            screenPoint.x,
+            screenPoint.y,
+            scale * ass.frameWidth,
+            scale * ass.frameHeight);
     }
 
     public fillText(text: string, x: number, y: number, maxWidth?: number): void {
