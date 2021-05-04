@@ -22,6 +22,7 @@ import {MinigameIceCircleWinner} from "../../../../beam-bots-shared/communicatio
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 import {AudioController} from "../audio-controller";
 import {AnimatedSpriteSheet} from "../animated-sprite-sheet";
+import {KeyboardEventKeyState} from "../../../../shared/types";
 
 export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
