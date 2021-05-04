@@ -1,5 +1,5 @@
 import {IGameScene} from "../i-game-scene";
-import {GameScenes} from "../../../../beam-bots-shared/types";
+import {GameScenes, PlayerColors} from "../../../../beam-bots-shared/types";
 import {
     CommunicationObjectTypesServerToClient,
     CommunicationTypeAndObject
@@ -22,7 +22,8 @@ import {MinigameIceCircleWinner} from "../../../../beam-bots-shared/communicatio
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 import {AudioController} from "../audio-controller";
 import {AnimatedSpriteSheet} from "../animated-sprite-sheet";
-import {KeyboardEventKeyState} from "../../../../shared/types";
+import {ColorToAnimatedSpriteMap, KeyboardEventKeyState} from "../../../../shared/types";
+import {SpriteSheetState} from "../../../../shared/interfaces";
 
 export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
@@ -42,7 +43,7 @@ export class MinigameIceCircle extends IGameScene {
     private startTime: number;
     private winningPlayer: Player | null;
     private countdownText: 4 | 3 | 2 | 1 | 0 | -1;
-    private spriteSheet: AnimatedSpriteSheet | null;
+    private spriteSheets: ColorToAnimatedSpriteMap;
 
     constructor(setMinigameIceCircleScene: SetMinigameIceCircleScene) {
         super();
@@ -86,55 +87,59 @@ export class MinigameIceCircle extends IGameScene {
             url: "ice_circle_countdown.wav"
         }]);
 
-        this.spriteSheet = null;
+        const spriteSheetStates: SpriteSheetState[] = [{
+            name: "NOWHERE",
+            startRow: 0,
+            startColumn: 1,
+            amountOfFrames: 1,
+        }, {
+            name: "DOWN",
+            startRow: 0,
+            startColumn: 0,
+            amountOfFrames: 4,
+        }, {
+            name: "BOTTOM LEFT",
+            startRow: 1,
+            startColumn: 0,
+            amountOfFrames: 4,
+        }, {
+            name: "LEFT",
+            startRow: 2,
+            startColumn: 0,
+            amountOfFrames: 4,
+        }, {
+            name: "UP",
+            startRow: 3,
+            startColumn: 0,
+            amountOfFrames: 4,
+        }, {
+            name: "TOP LEFT",
+            startRow: 4,
+            startColumn: 0,
+            amountOfFrames: 4,
+        }, {
+            name: "TOP RIGHT",
+            startRow: 5,
+            startColumn: 0,
+            amountOfFrames: 4,
+        }, {
+            name: "RIGHT",
+            startRow: 6,
+            startColumn: 0,
+            amountOfFrames: 4,
+        }, {
+            name: "BOTTOM RIGHT",
+            startRow: 7,
+            startColumn: 0,
+            amountOfFrames: 4,
+        }];
+        this.spriteSheets = {};
         const spriteSheetAsImage: HTMLImageElement = new Image();
         spriteSheetAsImage.onload = () => {
-            this.spriteSheet = new AnimatedSpriteSheet(spriteSheetAsImage, [{
-                name: "NOWHERE",
-                startRow: 0,
-                startColumn: 1,
-                amountOfFrames: 1,
-            }, {
-                name: "DOWN",
-                startRow: 0,
-                startColumn: 0,
-                amountOfFrames: 4,
-            }, {
-                name: "BOTTOM LEFT",
-                startRow: 1,
-                startColumn: 0,
-                amountOfFrames: 4,
-            }, {
-                name: "LEFT",
-                startRow: 2,
-                startColumn: 0,
-                amountOfFrames: 4,
-            }, {
-                name: "UP",
-                startRow: 3,
-                startColumn: 0,
-                amountOfFrames: 4,
-            }, {
-                name: "TOP LEFT",
-                startRow: 4,
-                startColumn: 0,
-                amountOfFrames: 4,
-            }, {
-                name: "TOP RIGHT",
-                startRow: 5,
-                startColumn: 0,
-                amountOfFrames: 4,
-            }, {
-                name: "RIGHT",
-                startRow: 6,
-                startColumn: 0,
-                amountOfFrames: 4,
-            }, {
-                name: "BOTTOM RIGHT",
-                startRow: 7,
-                startColumn: 0,
-                amountOfFrames: 4,
-            }], "NOWHERE", ConstantsWeb.MG_ICECIRCLE_ANIMATION_MS, 8, 4);
+
+            for (let i: number = 0; i < this.playersLocally.length; i++) {
+                this.spriteSheets[this.playersLocally[i].player.color] = new AnimatedSpriteSheet(spriteSheetAsImage, spriteSheetStates, "NOWHERE", ConstantsWeb.MG_ICECIRCLE_ANIMATION_MS, 8, 4);
+            }
         };
         spriteSheetAsImage.src = "/beam-bots/assets/images/ice_circle_character.png";
     }
@@ -207,12 +212,12 @@ export class MinigameIceCircle extends IGameScene {
             this.context.arc(playerInfo.location.x, playerInfo.location.y, this.localPlayerRadius, 0, 2 * Math.PI);
             this.context.fill();
 
-            if (this.spriteSheet != null) {
+            if (this.spriteSheets[playerInfo.player.color] != null) {
                 const locationToDraw: Point2D = HelperSharedFunctions.subtract(playerInfo.location, {
                     x: 65,
                     y: 180
                 });
-                this.context.drawImageFromAnimatedSpriteSheet(this.spriteSheet, locationToDraw, 7);
+                this.context.drawImageFromAnimatedSpriteSheet(this.spriteSheets[playerInfo.player.color] as AnimatedSpriteSheet, locationToDraw, 7);
             }
         }
         if (this.gameState === "winner") {
@@ -284,9 +289,8 @@ export class MinigameIceCircle extends IGameScene {
         this.playersLocally = [];
         for (let i: number = 0; i < this.playersFromServer.length; i++) {
             this.playersLocally.push(this.clonePlayerInfo(this.playersFromServer[i]));
-            if (this.spriteSheet != null) {
-                this.spriteSheet.setNewState(this.playersLocally[0].accelerationDirection);
-            }
+            const playerColor: PlayerColors = this.playersFromServer[i].player.color;
+            this.spriteSheets[playerColor]?.setNewState(this.playersLocally[i].accelerationDirection);
         }
 
         if (update.reasonForUpdate === "PlayerFell") {
