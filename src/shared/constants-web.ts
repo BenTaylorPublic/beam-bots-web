@@ -7,6 +7,7 @@ export class ConstantsWeb {
     public static PING_FREQUENCY: number = 2_000;
     public static MINIMUM_CANVAS_WIDTH: number = 640;
     public static MINIMUM_CANVAS_HEIGHT: number = 360;
+    public static DEFAULT_VOLUME: number = 50;
 
     //Colors
     public static BLUE: string = "#008FD0";

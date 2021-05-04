@@ -47,6 +47,7 @@ class SettingsView {
         }
         if (!ConstantsWeb.USE_HTTPS_SERVER) {
             localStorage.setItem("serverUrl", this.serverUrl.value);
+            HttpService.serverUrl = this.serverUrl.value;
         }
         localStorage.setItem("password", this.password.value);
         HttpService.setPassword(this.password.value);

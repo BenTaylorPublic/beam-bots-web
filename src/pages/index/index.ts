@@ -12,6 +12,8 @@ export class IndexView {
     public static pingDiv: HTMLDivElement;
     private static escapeMenu: HTMLDivElement;
     private static showPingCheckbox: HTMLInputElement;
+    private static volumeRange: HTMLInputElement;
+    private static volumeNumber: HTMLSpanElement;
     private static escapeMenuShowing: boolean;
 
     public static initialize(): void {
@@ -19,8 +21,8 @@ export class IndexView {
 
         AudioController.initialize();
         HttpService.initialize();
-        this.setupSocket();
         this.setupDom();
+        this.setupSocket();
         KeybindsController.initialize();
         KeybindsController.registerKeyCallback("escape", this.toggleEscapeMenu.bind(this));
     }
@@ -108,6 +110,15 @@ export class IndexView {
             this.showPingCheckbox.checked = false;
             this.pingDiv.classList.add("displayNone");
         }
+
+        this.volumeRange = document.getElementById("volume") as HTMLInputElement;
+        this.volumeNumber = document.getElementById("volumeNumber") as HTMLSpanElement;
+        const volumeString: string | null = localStorage.getItem("volume");
+        const volume: number = volumeString == null ? ConstantsWeb.DEFAULT_VOLUME : Number(volumeString);
+        this.volumeRange.value = volume.toString();
+        AudioController.setVolume(volume);
+        this.volumeRange.onchange = this.changeVolume.bind(this);
+        this.volumeNumber.innerText = volume.toString();
     }
 
     private static toggleEscapeMenu(data: KeyboardEventKeyState): void {
@@ -135,6 +146,13 @@ export class IndexView {
             localStorage.setItem("showPing", "false");
             this.pingDiv.classList.add("displayNone");
         }
+    }
+
+    private static changeVolume(): void {
+        const volume: number = Number(this.volumeRange.value);
+        AudioController.setVolume(volume);
+        this.volumeNumber.innerText = volume.toString();
+        localStorage.setItem("volume", volume.toString());
     }
 }
 
