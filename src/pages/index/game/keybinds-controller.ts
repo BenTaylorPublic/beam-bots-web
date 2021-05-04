@@ -1,3 +1,5 @@
+import {KeyboardEventCallback, KeyboardEventKeyState} from "../../../shared/types";
+
 export class KeybindsController {
     private static keysToCallbacks: { [key: string]: KeyboardEventCallback[] };
 
