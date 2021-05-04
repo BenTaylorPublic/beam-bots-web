@@ -1,13 +1,13 @@
 import {IGameScene} from "../i-game-scene";
-import {GameScenes, PlayerColors} from "../../../../beam-bots-shared/types";
+import {GameScenes} from "../../../../beam-bots-shared/types";
 import {
     CommunicationObjectTypesServerToClient,
     CommunicationTypeAndObject
 } from "../../../../beam-bots-shared/communication-objects/communication-object";
 import {PlayerState} from "../player-state";
-import {ConstantsWeb} from "../../../../shared/constants-web";
 import {LobbyStartButtonClicked} from "../../../../beam-bots-shared/communication-objects/client-to-server/lobby/lobby-start-button-clicked";
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
+import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
 
 export class Lobby extends IGameScene {
     public name: GameScenes = "Lobby";
@@ -42,33 +42,10 @@ export class Lobby extends IGameScene {
             this.context.drawImage(this.logo, x, 0, this.logo.width, this.logo.height);
         }
         for (let i: number = 0; i < PlayerState.allPlayers.length; i++) {
-            this.context.fillStyle = this.convertColorToHex(PlayerState.allPlayers[i].color);
+            this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(PlayerState.allPlayers[i].color);
             this.context.fillText(PlayerState.allPlayers[i].name, 0, (i + 1) * 170);
         }
 
-    }
-
-    private convertColorToHex(color: PlayerColors): string {
-        switch (color) {
-            case "blue":
-                return ConstantsWeb.BLUE;
-            case "red":
-                return ConstantsWeb.RED;
-            case "green":
-                return ConstantsWeb.GREEN;
-            case "purple":
-                return ConstantsWeb.PURPLE;
-            case "pink":
-                return ConstantsWeb.PINK;
-            case "yellow":
-                return ConstantsWeb.YELLOW;
-            case "orange":
-                return ConstantsWeb.ORANGE;
-            case "brown":
-                return ConstantsWeb.BROWN;
-            default:
-                return "#FFFFFF";
-        }
     }
 
     private setupOverlay(): void {

@@ -7,24 +7,96 @@ export class HelperWebFunctions {
         await new Promise(resolve => setTimeout(() => resolve(1), ms));
     }
 
-    public static convertColorToHexcode(color: PlayerColors): string {
+    public static convertColorToHexcode(color: PlayerColors, number: number = 1): string {
         switch (color) {
             case "blue":
-                return ConstantsWeb.BLUE;
+                switch (number) {
+                    case 2:
+                        return ConstantsWeb.BLUE2;
+                    case 3:
+                        return ConstantsWeb.BLUE3;
+                    case 4:
+                        return ConstantsWeb.BLUE4;
+                    default:
+                        return ConstantsWeb.BLUE1;
+                }
             case "red":
-                return ConstantsWeb.RED;
+                switch (number) {
+                    case 2:
+                        return ConstantsWeb.RED2;
+                    case 3:
+                        return ConstantsWeb.RED3;
+                    case 4:
+                        return ConstantsWeb.RED4;
+                    default:
+                        return ConstantsWeb.RED1;
+                }
             case "green":
-                return ConstantsWeb.GREEN;
+                switch (number) {
+                    case 2:
+                        return ConstantsWeb.GREEN2;
+                    case 3:
+                        return ConstantsWeb.GREEN3;
+                    case 4:
+                        return ConstantsWeb.GREEN4;
+                    default:
+                        return ConstantsWeb.GREEN1;
+                }
             case "purple":
-                return ConstantsWeb.PURPLE;
+                switch (number) {
+                    case 2:
+                        return ConstantsWeb.PURPLE2;
+                    case 3:
+                        return ConstantsWeb.PURPLE3;
+                    case 4:
+                        return ConstantsWeb.PURPLE4;
+                    default:
+                        return ConstantsWeb.PURPLE1;
+                }
             case "pink":
-                return ConstantsWeb.PINK;
+                switch (number) {
+                    case 2:
+                        return ConstantsWeb.PINK2;
+                    case 3:
+                        return ConstantsWeb.PINK3;
+                    case 4:
+                        return ConstantsWeb.PINK4;
+                    default:
+                        return ConstantsWeb.PINK1;
+                }
             case "yellow":
-                return ConstantsWeb.YELLOW;
+                switch (number) {
+                    case 2:
+                        return ConstantsWeb.YELLOW2;
+                    case 3:
+                        return ConstantsWeb.YELLOW3;
+                    case 4:
+                        return ConstantsWeb.YELLOW4;
+                    default:
+                        return ConstantsWeb.YELLOW1;
+                }
             case "orange":
-                return ConstantsWeb.ORANGE;
+                switch (number) {
+                    case 2:
+                        return ConstantsWeb.ORANGE2;
+                    case 3:
+                        return ConstantsWeb.ORANGE3;
+                    case 4:
+                        return ConstantsWeb.ORANGE4;
+                    default:
+                        return ConstantsWeb.ORANGE1;
+                }
             case "brown":
-                return ConstantsWeb.BROWN;
+                switch (number) {
+                    case 2:
+                        return ConstantsWeb.BROWN2;
+                    case 3:
+                        return ConstantsWeb.BROWN3;
+                    case 4:
+                        return ConstantsWeb.BROWN4;
+                    default:
+                        return ConstantsWeb.BROWN1;
+                }
         }
     }
 

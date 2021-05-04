@@ -1,5 +1,6 @@
 import {ErrorService} from "./error-service";
 import {ConstantsWeb} from "../constants-web";
+import {TCallback, VoidCallback} from "../types";
 
 export class HttpService {
     public static serverUrl: string;

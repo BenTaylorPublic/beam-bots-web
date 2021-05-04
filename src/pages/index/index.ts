@@ -6,6 +6,7 @@ import {ConstantsWeb} from "../../shared/constants-web";
 import {KeybindsController} from "./game/keybinds-controller";
 import {HttpService} from "../../shared/services/http-service";
 import {AudioController} from "./game/audio-controller";
+import {KeyboardEventKeyState} from "../../shared/types";
 import DisconnectReason = Socket.DisconnectReason;
 
 export class IndexView {

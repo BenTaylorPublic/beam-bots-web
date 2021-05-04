@@ -138,6 +138,8 @@ export class MinigameIceCircle extends IGameScene {
         spriteSheetAsImage.onload = () => {
 
             for (let i: number = 0; i < this.playersLocally.length; i++) {
+                // const playerColor:
+                // const imageRecolored: HTMLImageElement = HelperWebFunctions.replaceColorInImage(spriteSheetAsImage, HelperWebFunctions.convertColorToHexcode(this.pl))
                 this.spriteSheets[this.playersLocally[i].player.color] = new AnimatedSpriteSheet(spriteSheetAsImage, spriteSheetStates, "NOWHERE", ConstantsWeb.MG_ICECIRCLE_ANIMATION_MS, 8, 4);
             }
         };
@@ -255,16 +257,16 @@ export class MinigameIceCircle extends IGameScene {
                 let color: string = "#000000";
                 switch (this.countdownText) {
                     case 3:
-                        color = ConstantsWeb.RED;
+                        color = ConstantsWeb.RED1;
                         break;
                     case 2:
-                        color = ConstantsWeb.ORANGE;
+                        color = ConstantsWeb.ORANGE1;
                         break;
                     case 1:
-                        color = ConstantsWeb.YELLOW;
+                        color = ConstantsWeb.YELLOW1;
                         break;
                     case 0:
-                        color = ConstantsWeb.GREEN;
+                        color = ConstantsWeb.GREEN1;
                         break;
                 }
                 this.context.font = "170px monospace";
