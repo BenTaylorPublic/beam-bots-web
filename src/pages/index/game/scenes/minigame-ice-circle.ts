@@ -28,6 +28,7 @@ import {SpriteSheetState} from "../../../../shared/interfaces";
 export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
     private acceleration: number;
+    private accelerationFactorForDeceleration: number;
     private playersFromServer: MgIceCirclePlayerInfo[];
     private playersLocally: MgIceCirclePlayerInfo[];
     private lastUpdate: number;
@@ -55,6 +56,7 @@ export class MinigameIceCircle extends IGameScene {
         this.dStatus = "UP";
         this.winningPlayer = setMinigameIceCircleScene.winner;
         this.acceleration = setMinigameIceCircleScene.acceleration;
+        this.accelerationFactorForDeceleration = setMinigameIceCircleScene.accelerationFactorForDeceleration;
         this.playersFromServer = setMinigameIceCircleScene.players;
         this.gameState = setMinigameIceCircleScene.gameState;
         if (this.gameState === "countdown") {
@@ -225,7 +227,7 @@ export class MinigameIceCircle extends IGameScene {
                 continue;
             }
             if (updatePositions) {
-                HelperSharedFunctions.mgIceCircleAddAcceleration(playerInfo, accelerationToAdd);
+                HelperSharedFunctions.mgIceCircleAddAcceleration(playerInfo, accelerationToAdd, this.accelerationFactorForDeceleration);
                 HelperSharedFunctions.mgIceCircleCalculateNewPosition(playerInfo, ms);
             }
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInfo.player.color);
