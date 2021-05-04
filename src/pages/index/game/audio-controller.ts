@@ -39,7 +39,7 @@ export class AudioController {
     }
 
     public static setVolume(volume: number): void {
-        this.volume = volume;
+        this.volume = volume / 100;
         for (let i: number = 0; i < this.audio.length; i++) {
             const audioData: AudioData = this.audio[i];
             if (audioData.element != null) {
