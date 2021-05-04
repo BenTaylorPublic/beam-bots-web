@@ -100,30 +100,39 @@ export class HelperWebFunctions {
         }
     }
 
-    public static replaceColorInImage(image: HTMLImageElement, color1: string, color2: string): HTMLImageElement | null {
+    public static replaceColorInImage(image: HTMLImageElement, colorsToReplace: string[], colosrToInput: string[]): HTMLImageElement {
+        if (colorsToReplace.length !== colosrToInput.length) {
+            throw Error("Color lengths are off");
+        }
+
         const canvas: HTMLCanvasElement = document.createElement("canvas");
         canvas.width = image.naturalWidth;
         canvas.height = image.naturalHeight;
 
         const ctx = canvas.getContext("2d");
         if (ctx == null) {
-            return null;
+            throw Error("ctx is null");
         }
         ctx.drawImage(image, 0, 0);
+        const oldColors: number[][] = [];
+        const newColors: number[][] = [];
 
-        const oldColor: number[] = HelperWebFunctions.convertHexToRgb(color1);
-        const newColor: number[] = HelperWebFunctions.convertHexToRgb(color2);
+        for (let i: number = 0; i < colorsToReplace.length; i++) {
+            oldColors.push(HelperWebFunctions.convertHexToRgb(colorsToReplace[i]));
+            newColors.push(HelperWebFunctions.convertHexToRgb(colosrToInput[i]));
+        }
+
         const imageData: ImageData = ctx.getImageData(0, 0, image.naturalWidth, image.naturalHeight);
         for (let i: number = 0; i < imageData.data.length; i += 4) {
-            // is this pixel the old rgb?
-            if (imageData.data[i] === oldColor[0] &&
-                imageData.data[i + 1] === oldColor[1] &&
-                imageData.data[i + 2] === oldColor[2]
-            ) {
-                // change to your new rgb
-                imageData.data[i] = newColor[0];
-                imageData.data[i + 1] = newColor[1];
-                imageData.data[i + 2] = newColor[2];
+            for (let j: number = 0; j < oldColors.length; j++) {
+                if (imageData.data[i] === oldColors[j][0] &&
+                    imageData.data[i + 1] === oldColors[j][1] &&
+                    imageData.data[i + 2] === oldColors[j][2]
+                ) {
+                    imageData.data[i] = newColors[j][0];
+                    imageData.data[i + 1] = newColors[j][1];
+                    imageData.data[i + 2] = newColors[j][2];
+                }
             }
         }
         // put the altered data back on the canvas

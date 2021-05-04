@@ -137,10 +137,29 @@ export class MinigameIceCircle extends IGameScene {
         const spriteSheetAsImage: HTMLImageElement = new Image();
         spriteSheetAsImage.onload = () => {
 
+            const oldColors: string[] = [
+                HelperWebFunctions.convertColorToHexcode("pink", 1),
+                HelperWebFunctions.convertColorToHexcode("pink", 2),
+                HelperWebFunctions.convertColorToHexcode("pink", 3),
+                HelperWebFunctions.convertColorToHexcode("pink", 4)
+            ];
+
             for (let i: number = 0; i < this.playersLocally.length; i++) {
-                // const playerColor:
-                // const imageRecolored: HTMLImageElement = HelperWebFunctions.replaceColorInImage(spriteSheetAsImage, HelperWebFunctions.convertColorToHexcode(this.pl))
-                this.spriteSheets[this.playersLocally[i].player.color] = new AnimatedSpriteSheet(spriteSheetAsImage, spriteSheetStates, "NOWHERE", ConstantsWeb.MG_ICECIRCLE_ANIMATION_MS, 8, 4);
+                const playerColor: PlayerColors = this.playersLocally[i].player.color;
+
+                const newColors: string[] = [
+                    HelperWebFunctions.convertColorToHexcode(playerColor, 1),
+                    HelperWebFunctions.convertColorToHexcode(playerColor, 2),
+                    HelperWebFunctions.convertColorToHexcode(playerColor, 3),
+                    HelperWebFunctions.convertColorToHexcode(playerColor, 4)
+                ];
+
+                const imageRecolored: HTMLImageElement = HelperWebFunctions.replaceColorInImage(spriteSheetAsImage,
+                    oldColors,
+                    newColors);
+                imageRecolored.width = spriteSheetAsImage.width;
+                imageRecolored.height = spriteSheetAsImage.height;
+                this.spriteSheets[this.playersLocally[i].player.color] = new AnimatedSpriteSheet(imageRecolored, spriteSheetStates, "NOWHERE", ConstantsWeb.MG_ICECIRCLE_ANIMATION_MS, 8, 4);
             }
         };
         spriteSheetAsImage.src = "/beam-bots/assets/images/ice_circle_character.png";
