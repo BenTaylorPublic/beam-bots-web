@@ -1,7 +1,7 @@
 import {HttpService} from "./http-service";
 
 export class ErrorService {
-    //Next: 1015
+    //Next: 1016
     public static error(code: number, message: string): string {
 
         try {

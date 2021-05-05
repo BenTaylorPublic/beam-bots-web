@@ -37,11 +37,16 @@ export class IndexView {
             throw ErrorService.error(1014, `Username max length is ${Sconstants.MAX_NAME_LENGTH}, go to https://bentaylor.dev/beam-bots/settings`);
         }
 
+        const password: string | null = localStorage.getItem("password");
+        if (password == null) {
+            throw ErrorService.error(1015, "password is null, go to https://bentaylor.dev/beam-bots/settings");
+        }
+
         const socket: Socket = io(HttpService.serverUrl);
         PlayerState.initialize(socket);
 
         socket.on("connect", () => {
-            PlayerState.connected(username);
+            PlayerState.connected(username, password);
         });
 
         socket.on("disconnect", (reason: DisconnectReason) => {

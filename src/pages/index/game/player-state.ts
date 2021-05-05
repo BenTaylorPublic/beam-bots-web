@@ -44,13 +44,16 @@ export class PlayerState {
         }
     }
 
-    public static connected(username: string): void {
+    public static connected(username: string, password: string): void {
         this.player = {
             id: -1,
             name: username,
             color: "blue"
         };
-        this.sendCommunication<ClientToServerHello>("ClientToServerHello", {name: username});
+        this.sendCommunication<ClientToServerHello>("ClientToServerHello", {
+            name: username,
+            password: password
+        });
     }
 
     public static disconnected(): void {
