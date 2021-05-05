@@ -8,6 +8,7 @@ import {HttpService} from "../../shared/services/http-service";
 import {AudioController} from "./game/audio-controller";
 import {KeyboardEventKeyState} from "../../shared/types";
 import DisconnectReason = Socket.DisconnectReason;
+import {Sconstants} from "../../beam-bots-shared/sconstants";
 
 export class IndexView {
     public static pingDiv: HTMLDivElement;
@@ -32,6 +33,8 @@ export class IndexView {
         const username: string | null = localStorage.getItem("username");
         if (username == null) {
             throw ErrorService.error(1007, "username is null, go to https://bentaylor.dev/beam-bots/settings");
+        } else if (username.length > Sconstants.MAX_NAME_LENGTH) {
+            throw ErrorService.error(1014, `Username max length is ${Sconstants.MAX_NAME_LENGTH}, go to https://bentaylor.dev/beam-bots/settings`);
         }
 
         const socket: Socket = io(HttpService.serverUrl);

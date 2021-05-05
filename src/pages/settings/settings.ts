@@ -1,6 +1,7 @@
 import {HttpService} from "../../shared/services/http-service";
 import {ErrorService} from "../../shared/services/error-service";
 import {ConstantsWeb} from "../../shared/constants-web";
+import {Sconstants} from "../../beam-bots-shared/sconstants";
 
 class SettingsView {
     private static serverUrl: HTMLInputElement;
@@ -44,6 +45,9 @@ class SettingsView {
         const lettersRegex: RegExp = new RegExp(/[^a-zA-Z]/);
         if (lettersRegex.test(this.username.value)) {
             throw ErrorService.error(1001, "Only A-Z in your name please");
+        }
+        if (this.username.value.length > Sconstants.MAX_NAME_LENGTH) {
+            throw ErrorService.error(1013, `Max name length: ${Sconstants.MAX_NAME_LENGTH}`);
         }
         if (!ConstantsWeb.USE_HTTPS_SERVER) {
             localStorage.setItem("serverUrl", this.serverUrl.value);
