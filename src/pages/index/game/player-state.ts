@@ -1,6 +1,6 @@
 import {Socket} from "socket.io-client";
 import {UpdatedPlayerList} from "../../../beam-bots-shared/communication-objects/server-to-client/updated-player-list";
-import {SetName} from "../../../beam-bots-shared/communication-objects/client-to-server/set-name";
+import {ClientToServerHello} from "../../../beam-bots-shared/communication-objects/client-to-server/client-to-server-hello";
 import {
     CommunicationObjectTypesClientToServer,
     CommunicationObjectTypesServerToClient,
@@ -50,7 +50,7 @@ export class PlayerState {
             name: username,
             color: "blue"
         };
-        this.sendCommunication<SetName>("SetName", {name: username});
+        this.sendCommunication<ClientToServerHello>("ClientToServerHello", {name: username});
     }
 
     public static disconnected(): void {
