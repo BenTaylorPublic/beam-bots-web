@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Beam Bots - Settings</title>
+    <title>Beam Bots - Admin</title>
     <meta charset="UTF-8">
     <link href="/beam-bots/global-styles.css" rel="stylesheet" type="text/css">
     <link href="/beam-bots/admin.css" rel="stylesheet" type="text/css">
@@ -13,15 +13,24 @@
     <label>
         Admin Password:
         <input type="text"
-               id="adminPassword">
+               id="adminPassword"
+               autocomplete="off">
     </label>
-    <button id="testConnectionButton">
+    <button id="connectButton">
         Connect
     </button>
 </div>
 <div id="adminContent"
      class="displayNone">
-    Logged in
+    <label>
+        Client Password:
+        <input type="text"
+               id="clientPassword"
+               autocomplete="off">
+    </label>
+    <button id="setClientPasswordButton">
+        Set
+    </button>
 </div>
 </body>
 </html>

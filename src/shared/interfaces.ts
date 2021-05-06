@@ -1,7 +1,12 @@
 export interface AudioData {
     url: string;
     name: string;
-    element?: HTMLAudioElement;
+}
+
+export interface AudioDataWithElements {
+    url: string;
+    name: string;
+    elements: HTMLAudioElement[];
 }
 
 export interface SpriteSheetState {

@@ -26,7 +26,7 @@ export class IndexView {
         this.setupDom();
         this.setupSocket();
         KeybindsController.initialize();
-        KeybindsController.registerKeyCallback("escape", this.toggleEscapeMenu.bind(this));
+        KeybindsController.registerKeyCallback("`", this.toggleEscapeMenu.bind(this));
     }
 
     private static setupSocket(): void {
