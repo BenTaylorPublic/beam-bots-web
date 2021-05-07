@@ -37,7 +37,7 @@ export class Lobby extends IGameScene {
     }
 
     protected loop(ms: number): void {
-        this.context.font = "170px monospace";
+        this.context.font = `${ConstantsWeb.LOBBY_NAME_FONT_SIZE}px monospace`;
         if (this.logo != null) {
             const x: number = Sconstants.GAME_LOGIC_WIDTH - this.logo.width;
             this.context.drawImage(this.logo, x, 0, this.logo.width, this.logo.height);
