@@ -13,12 +13,15 @@ import {ConstantsWeb} from "../../../../shared/constants-web";
 export class Lobby extends IGameScene {
     public name: GameScenes = "Lobby";
     private logo: HTMLImageElement | null;
+    private escapeMenuTip: HTMLImageElement | null;
 
     constructor() {
         super();
         this.background.style.backgroundColor = "black";
         this.setupOverlay();
         this.logo = null;
+        this.escapeMenuTip = null;
+
         const logoAsImage: HTMLImageElement = new Image();
         logoAsImage.onload = () => {
             logoAsImage.width = logoAsImage.width / 1.5;
@@ -26,6 +29,14 @@ export class Lobby extends IGameScene {
             this.logo = logoAsImage;
         };
         logoAsImage.src = "/beam-bots/assets/images/logo.png";
+
+        const escapeMenuTipAsImage: HTMLImageElement = new Image();
+        escapeMenuTipAsImage.onload = () => {
+            escapeMenuTipAsImage.width = escapeMenuTipAsImage.width / 1.5;
+            escapeMenuTipAsImage.height = escapeMenuTipAsImage.height / 1.5;
+            this.escapeMenuTip = escapeMenuTipAsImage;
+        };
+        escapeMenuTipAsImage.src = "/beam-bots/assets/images/lobby_escape_menu_tip.png";
     }
 
     public handleCommunication(
@@ -73,6 +84,17 @@ export class Lobby extends IGameScene {
         this.context.fillStyle = "white";
         this.context.textAlign = "center";
         this.context.fillText("Tip", tipsHeadingX + (tipsHeadingTextWidth / 2), tipsBoxY + 10, tipsHeadingTextWidth);
+
+        if (this.escapeMenuTip != null) {
+            this.context.drawImage(this.escapeMenuTip, tipsBoxX + 20, tipsBoxY + 20, this.escapeMenuTip.width, this.escapeMenuTip.height);
+        }
+
+        this.context.fillStyle = "white";
+        this.context.textAlign = "center";
+        this.context.fillText("Press this for", tipsHeadingX + (tipsHeadingTextWidth / 2) + 300, tipsBoxY + 200);
+        this.context.fillText("a settings menu", tipsHeadingX + (tipsHeadingTextWidth / 2) + 300, tipsBoxY + 300);
+
+
     }
 
     private setupOverlay(): void {
