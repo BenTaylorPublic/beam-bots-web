@@ -63,6 +63,8 @@ export class IndexView {
     }
 
     private static setupDom(): void {
+        this.fullscreenButton = document.getElementById("fullscreen") as HTMLButtonElement;
+
         this.detectSizing();
 
         const clientVersionDiv: HTMLDivElement = document.getElementById("clientVersion") as HTMLDivElement;
@@ -71,7 +73,6 @@ export class IndexView {
         const closeEscapeMenuButton: HTMLButtonElement = document.getElementById("escapeClose") as HTMLButtonElement;
         closeEscapeMenuButton.onclick = this.closeEscapeMenu.bind(this);
 
-        this.fullscreenButton = document.getElementById("fullscreen") as HTMLButtonElement;
         this.escapeMenu = document.getElementById("escapeMenu") as HTMLDivElement;
         this.showPingCheckbox = document.getElementById("showPing") as HTMLInputElement;
         this.showPingCheckbox.onchange = this.toggleShowPing.bind(this);
@@ -157,6 +158,13 @@ export class IndexView {
     }
 
     private static detectSizing(): void {
+        //Update menu button
+        if (document.fullscreenElement != null) {
+            this.fullscreenButton.innerText = "Exit Fullscreen";
+        } else {
+            this.fullscreenButton.innerText = "Fullscreen";
+        }
+
         const height: number = window.innerHeight;
         const width: number = window.innerWidth;
 
