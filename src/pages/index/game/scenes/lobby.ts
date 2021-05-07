@@ -8,6 +8,7 @@ import {PlayerState} from "../player-state";
 import {LobbyStartButtonClicked} from "../../../../beam-bots-shared/communication-objects/client-to-server/lobby/lobby-start-button-clicked";
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
+import {ConstantsWeb} from "../../../../shared/constants-web";
 
 export class Lobby extends IGameScene {
     public name: GameScenes = "Lobby";
@@ -16,7 +17,7 @@ export class Lobby extends IGameScene {
     constructor() {
         super();
         this.background.style.backgroundColor = "black";
-        this.context.font = "170px monospace";
+        this.context.font = `${ConstantsWeb.LOBBY_NAME_FONT_SIZE}px monospace`;
         this.setupOverlay();
         this.logo = null;
         const logoAsImage: HTMLImageElement = new Image();
@@ -43,7 +44,7 @@ export class Lobby extends IGameScene {
         }
         for (let i: number = 0; i < PlayerState.allPlayers.length; i++) {
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(PlayerState.allPlayers[i].color);
-            this.context.fillText(PlayerState.allPlayers[i].name, 0, (i + 1) * 170);
+            this.context.fillText(PlayerState.allPlayers[i].name, 0, (i + 1) * ConstantsWeb.LOBBY_NAME_FONT_SIZE);
         }
 
     }
