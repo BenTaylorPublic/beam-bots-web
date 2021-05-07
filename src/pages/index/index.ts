@@ -19,6 +19,7 @@ export class IndexView {
     private static volumeNumber: HTMLSpanElement;
     private static escapeMenuShowing: boolean;
     private static resizeTimeout: number | null;
+    private static fullscreenButton: HTMLButtonElement;
 
     public static initialize(): void {
         this.escapeMenuShowing = false;
@@ -70,6 +71,7 @@ export class IndexView {
         const closeEscapeMenuButton: HTMLButtonElement = document.getElementById("escapeClose") as HTMLButtonElement;
         closeEscapeMenuButton.onclick = this.closeEscapeMenu.bind(this);
 
+        this.fullscreenButton = document.getElementById("fullscreen") as HTMLButtonElement;
         this.escapeMenu = document.getElementById("escapeMenu") as HTMLDivElement;
         this.showPingCheckbox = document.getElementById("showPing") as HTMLInputElement;
         this.showPingCheckbox.onchange = this.toggleShowPing.bind(this);
@@ -117,7 +119,14 @@ export class IndexView {
 
     private static fullscreen(): void {
         const body: HTMLBodyElement = document.body as HTMLBodyElement;
-        body.requestFullscreen();
+
+        if (document.fullscreenElement != null) {
+            document.exitFullscreen();
+            this.fullscreenButton.innerText = "Fullscreen";
+        } else {
+            body.requestFullscreen();
+            this.fullscreenButton.innerText = "Exit Fullscreen";
+        }
     }
 
     private static toggleShowPing(): void {
@@ -138,7 +147,6 @@ export class IndexView {
     }
 
     private static handleResizing(): void {
-        console.log(this.resizeTimeout);
         if (this.resizeTimeout != null) {
             clearTimeout(this.resizeTimeout);
         }
