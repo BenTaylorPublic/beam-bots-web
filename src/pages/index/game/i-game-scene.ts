@@ -9,9 +9,9 @@ import {CanvasContextWrapper} from "./canvas-context-wrapper";
 import {AudioController} from "./audio-controller";
 
 export abstract class IGameScene {
+    public context: CanvasContextWrapper;
     protected overlay: HTMLDivElement;
     protected background: HTMLDivElement;
-    protected context: CanvasContextWrapper;
     protected stopLoop: boolean;
     private lastLoopTime: number;
     public abstract name: GameScenes;
@@ -22,9 +22,8 @@ export abstract class IGameScene {
         this.overlay = document.getElementById("overlay") as HTMLDivElement;
         this.lastLoopTime = Date.now();
         const canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
-        const context: CanvasRenderingContext2D = canvas.getContext("2d") as CanvasRenderingContext2D;
-        context.imageSmoothingEnabled = false;
-        this.context = new CanvasContextWrapper(canvas, context);
+        this.context = new CanvasContextWrapper(canvas);
+        this.context.updateScaling();
     }
 
     public async startLoop(): Promise<void> {
