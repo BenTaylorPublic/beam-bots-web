@@ -21,6 +21,8 @@ export class Lobby extends IGameScene {
         this.logo = null;
         const logoAsImage: HTMLImageElement = new Image();
         logoAsImage.onload = () => {
+            logoAsImage.width = logoAsImage.width / 1.5;
+            logoAsImage.height = logoAsImage.height / 1.5;
             this.logo = logoAsImage;
         };
         logoAsImage.src = "/beam-bots/assets/images/logo.png";
@@ -39,12 +41,13 @@ export class Lobby extends IGameScene {
     protected loop(ms: number): void {
         this.context.font = `${ConstantsWeb.LOBBY_NAME_FONT_SIZE}px monospace`;
         if (this.logo != null) {
-            const x: number = Sconstants.GAME_LOGIC_WIDTH - this.logo.width;
+            //Centered
+            const x: number = (Sconstants.GAME_LOGIC_WIDTH - this.logo.width) / 2;
             this.context.drawImage(this.logo, x, 0, this.logo.width, this.logo.height);
         }
         for (let i: number = 0; i < PlayerState.allPlayers.length; i++) {
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(PlayerState.allPlayers[i].color);
-            this.context.fillText(PlayerState.allPlayers[i].name, 0, (i + 1) * ConstantsWeb.LOBBY_NAME_FONT_SIZE);
+            this.context.fillText(PlayerState.allPlayers[i].name, 0, (i + 1) * ConstantsWeb.LOBBY_NAME_FONT_SIZE + 250);
         }
 
     }
