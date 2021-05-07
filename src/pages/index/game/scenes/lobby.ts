@@ -45,11 +45,34 @@ export class Lobby extends IGameScene {
             const x: number = (Sconstants.GAME_LOGIC_WIDTH - this.logo.width) / 2;
             this.context.drawImage(this.logo, x, 0, this.logo.width, this.logo.height);
         }
+        this.context.textAlign = "left";
         for (let i: number = 0; i < PlayerState.allPlayers.length; i++) {
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(PlayerState.allPlayers[i].color);
             this.context.fillText(PlayerState.allPlayers[i].name, 0, (i + 1) * ConstantsWeb.LOBBY_NAME_FONT_SIZE + 250);
         }
 
+        //Tips box
+        const tipsBoxWidth: number = Sconstants.GAME_LOGIC_WIDTH / 2 - 100;
+        const tipsBoxX: number = Sconstants.GAME_LOGIC_WIDTH / 2;
+        const tipsBoxY: number = 800;
+        this.context.beginPath();
+        this.context.strokeRect(tipsBoxX, tipsBoxY, tipsBoxWidth, 500);
+        this.context.fillStyle = "transparent";
+        this.context.lineWidth = 10;
+        this.context.strokeStyle = "white";
+        this.context.stroke();
+
+        //Clear room for the heading
+        const tipsHeadingTextWidth: number = 300;
+        const tipsHeadingX: number = tipsBoxX + (tipsBoxWidth / 2) - (tipsHeadingTextWidth / 2);
+        this.context.fillStyle = "black";
+        this.context.fillRect(tipsHeadingX, tipsBoxY - 20, tipsHeadingTextWidth, 40);
+
+
+        this.context.font = `${ConstantsWeb.LOBBY_TIP_HEADING_FONT_SIZE}px monospace`;
+        this.context.fillStyle = "white";
+        this.context.textAlign = "center";
+        this.context.fillText("Tip", tipsHeadingX + (tipsHeadingTextWidth / 2), tipsBoxY + 10, tipsHeadingTextWidth);
     }
 
     private setupOverlay(): void {
@@ -57,7 +80,9 @@ export class Lobby extends IGameScene {
         startButton.innerText = "Start";
         startButton.style.position = "absolute";
         startButton.style.bottom = "10px";
-        startButton.style.right = "10px";
+        startButton.style.right = "0";
+        startButton.style.left = "0";
+        startButton.style.margin = "auto";
         startButton.onclick = this.startButtonClicked.bind(this);
         this.overlay.appendChild(startButton);
     }

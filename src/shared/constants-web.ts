@@ -50,4 +50,5 @@ export class ConstantsWeb {
     public static MG_ICECIRCLE_ANIMATION_MS: number = 100;
 
     public static LOBBY_NAME_FONT_SIZE: number = 130;
+    public static LOBBY_TIP_HEADING_FONT_SIZE: number = 50;
 }
