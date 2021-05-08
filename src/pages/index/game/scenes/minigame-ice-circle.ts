@@ -1,4 +1,4 @@
-import {IGameScene} from "../i-game-scene";
+import {IGameScene} from "./i-game-scene";
 import {GameScenes, PlayerColors} from "../../../../beam-bots-shared/types";
 import {
     CommunicationObjectTypesServerToClient,
@@ -244,60 +244,10 @@ export class MinigameIceCircle extends IGameScene {
             }
         }
         if (this.gameState === "winner") {
-            //Drawing winner popup
-            let backgroundColor: string;
-            let textColor: string;
-            let text: string;
-            if (this.winningPlayer != null) {
-                backgroundColor = HelperWebFunctions.convertColorToHexcode(this.winningPlayer.color);
-                textColor = "#000000";
-                text = `${this.winningPlayer.name} wins!`;
-            } else {
-                backgroundColor = "#333333";
-                textColor = "#FFFFFF";
-                text = "Draw!";
-            }
-            this.context.font = "170px monospace";
-            this.context.fillStyle = backgroundColor;
-            this.context.fillRect(0, 600, Sconstants.GAME_LOGIC_WIDTH, 230);
-            this.context.fillStyle = textColor;
-            this.context.textAlign = "center";
-            this.context.fillText(text, Sconstants.GAME_LOGIC_WIDTH / 2, 770);
+            this.drawWinnerBanner(this.winningPlayer);
         }
         if (this.countdownText !== -1) {
-            const now: number = Date.now();
-            const timeDifference: number = this.startTime - now;
-            const timeToCompareTo: number = (this.countdownText * 1_000) - 1_000;
-            if (timeDifference < timeToCompareTo) {
-                this.countdownText--;
-                if (this.countdownText === 3) {
-                    AudioController.playAudio("countdown");
-                }
-            }
-            if (this.countdownText !== -1 && this.countdownText !== 4) {
-                let color: string = "#000000";
-                switch (this.countdownText) {
-                    case 3:
-                        color = ConstantsWeb.RED1;
-                        break;
-                    case 2:
-                        color = ConstantsWeb.ORANGE1;
-                        break;
-                    case 1:
-                        color = ConstantsWeb.YELLOW1;
-                        break;
-                    case 0:
-                        color = ConstantsWeb.GREEN1;
-                        break;
-                }
-                this.context.font = "170px monospace";
-                this.context.fillStyle = color;
-                this.context.fillRect(1080, 100, 400, 230);
-                this.context.fillStyle = "#000000";
-                this.context.textAlign = "center";
-                const text: string = this.countdownText === 0 ? "GO!" : this.countdownText.toString();
-                this.context.fillText(text, Sconstants.GAME_LOGIC_WIDTH / 2, 270);
-            }
+            this.countdownText = this.handleCountdown(this.startTime, this.countdownText);
         }
     }
 

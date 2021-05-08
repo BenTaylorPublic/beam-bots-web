@@ -1,4 +1,4 @@
-import {IGameScene} from "../i-game-scene";
+import {IGameScene} from "./i-game-scene";
 import {GameScenes} from "../../../../beam-bots-shared/types";
 import {
     CommunicationObjectTypesServerToClient,

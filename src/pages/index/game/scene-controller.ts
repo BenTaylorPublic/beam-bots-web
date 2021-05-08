@@ -1,7 +1,7 @@
 import {GameScenes} from "../../../beam-bots-shared/types";
 import {Lobby} from "./scenes/lobby";
 import {ErrorService} from "../../../shared/services/error-service";
-import {IGameScene} from "./i-game-scene";
+import {IGameScene} from "./scenes/i-game-scene";
 import {MinigameIceCircle} from "./scenes/minigame-ice-circle";
 import {
     CommunicationObjectTypesServerToClient,
