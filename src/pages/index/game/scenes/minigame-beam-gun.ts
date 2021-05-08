@@ -11,11 +11,14 @@ import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 import {AudioController} from "../audio-controller";
 import {KeyboardEventKeyState} from "../../../../shared/types";
 import {
+    MgBeamGunDirection,
     MgBeamGunGameState,
     MgBeamGunPlayerInfo
 } from "../../../../beam-bots-shared/scene-interfaces/minigame-beam-gun-interfaces";
 import {SetMinigameBeamGunScene} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/set-minigame-beam-gun-scene";
 import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
+import {PlayerState} from "../player-state";
+import {MinigameBeamGunDirectionChange} from "../../../../beam-bots-shared/communication-objects/client-to-server/minigame-beam-gun/minigame-beam-gun-direction-change";
 
 export class MinigameBeamGun extends IGameScene {
     public name: GameScenes = "MinigameBeamGun";
@@ -27,7 +30,7 @@ export class MinigameBeamGun extends IGameScene {
     private startTime: number;
     private winningPlayer: Player | null;
     private countdownText: 4 | 3 | 2 | 1 | 0 | -1;
-    private playerVelocity: number;
+    private playerXVelocity: number;
     private playerSize: number;
     private gravity: number;
     private boxSize: number;
@@ -43,7 +46,7 @@ export class MinigameBeamGun extends IGameScene {
         this.aStatus = "UP";
         this.dStatus = "UP";
         this.winningPlayer = setMinigameBeamGunScene.winner;
-        this.playerVelocity = setMinigameBeamGunScene.playerVelocity;
+        this.playerXVelocity = setMinigameBeamGunScene.playerXVelocity;
         this.playerSize = setMinigameBeamGunScene.playerSize;
         this.gravity = setMinigameBeamGunScene.gravity;
         this.boxSize = setMinigameBeamGunScene.boxSize;
@@ -142,12 +145,22 @@ export class MinigameBeamGun extends IGameScene {
             location: HelperSharedFunctions.clonePoint2D(playerInfo.location),
             player: playerInfo.player,
             status: playerInfo.status,
-            velocity: HelperSharedFunctions.clonePoint2D(playerInfo.velocity)
+            yVelocity: playerInfo.yVelocity
         };
         return result;
     }
 
     private setDirection(): void {
-        throw new Error("setDirection not implemented");
+        let result: MgBeamGunDirection = "NOWHERE";
+        if (this.aStatus === "DOWN") {
+            result = "LEFT";
+        } else if (this.dStatus === "DOWN") {
+            result = "RIGHT";
+        }
+
+        const direction: MinigameBeamGunDirectionChange = {
+            newDirection: result
+        };
+        PlayerState.sendCommunication("MinigameBeamGunDirectionChange", direction);
     }
 }
