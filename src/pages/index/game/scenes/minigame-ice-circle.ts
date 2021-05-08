@@ -29,7 +29,6 @@ export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
     private acceleration: number;
     private accelerationFactorForDeceleration: number;
-    private playersFromServer: MgIceCirclePlayerInfo[];
     private playersLocally: MgIceCirclePlayerInfo[];
     private lastUpdate: number;
     private localPlayerRadius: number;
@@ -57,7 +56,6 @@ export class MinigameIceCircle extends IGameScene {
         this.winningPlayer = setMinigameIceCircleScene.winner;
         this.acceleration = setMinigameIceCircleScene.acceleration;
         this.accelerationFactorForDeceleration = setMinigameIceCircleScene.accelerationFactorForDeceleration;
-        this.playersFromServer = setMinigameIceCircleScene.players;
         this.gameState = setMinigameIceCircleScene.gameState;
         if (this.gameState === "countdown") {
             this.countdownText = 4;
@@ -65,8 +63,8 @@ export class MinigameIceCircle extends IGameScene {
             this.countdownText = -1;
         }
         this.playersLocally = [];
-        for (let i: number = 0; i < this.playersFromServer.length; i++) {
-            this.playersLocally.push(this.clonePlayerInfo(this.playersFromServer[i]));
+        for (let i: number = 0; i < setMinigameIceCircleScene.players.length; i++) {
+            this.playersLocally.push(this.clonePlayerInfo(setMinigameIceCircleScene.players[i]));
         }
         this.circleCenter = setMinigameIceCircleScene.circleCenter;
         this.circleVerticalRadius = setMinigameIceCircleScene.circleVerticalRadius;
@@ -258,11 +256,10 @@ export class MinigameIceCircle extends IGameScene {
 
     private updateReceived(update: MinigameIceCircleUpdate): void {
         this.lastUpdate = update.time;
-        this.playersFromServer = update.players;
         this.playersLocally = [];
-        for (let i: number = 0; i < this.playersFromServer.length; i++) {
-            this.playersLocally.push(this.clonePlayerInfo(this.playersFromServer[i]));
-            const playerColor: PlayerColors = this.playersFromServer[i].player.color;
+        for (let i: number = 0; i < update.players.length; i++) {
+            this.playersLocally.push(this.clonePlayerInfo(update.players[i]));
+            const playerColor: PlayerColors = update.players[i].player.color;
             this.spriteSheets[playerColor]?.setNewState(this.playersLocally[i].accelerationDirection);
         }
 

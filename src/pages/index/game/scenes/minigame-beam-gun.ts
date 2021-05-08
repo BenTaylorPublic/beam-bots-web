@@ -18,7 +18,6 @@ import {SetMinigameBeamGunScene} from "../../../../beam-bots-shared/communicatio
 
 export class MinigameBeamGun extends IGameScene {
     public name: GameScenes = "MinigameBeamGun";
-    private playersFromServer: MgBeamGunPlayerInfo[];
     private playersLocally: MgBeamGunPlayerInfo[];
     private lastUpdate: number;
     private aStatus: KeyboardEventKeyState;
@@ -35,7 +34,6 @@ export class MinigameBeamGun extends IGameScene {
         this.aStatus = "UP";
         this.dStatus = "UP";
         this.winningPlayer = setMinigameBeamGunScene.winner;
-        this.playersFromServer = setMinigameBeamGunScene.players;
         this.gameState = setMinigameBeamGunScene.gameState;
         if (this.gameState === "countdown") {
             this.countdownText = 4;
@@ -43,8 +41,8 @@ export class MinigameBeamGun extends IGameScene {
             this.countdownText = -1;
         }
         this.playersLocally = [];
-        for (let i: number = 0; i < this.playersFromServer.length; i++) {
-            this.playersLocally.push(this.clonePlayerInfo(this.playersFromServer[i]));
+        for (let i: number = 0; i < setMinigameBeamGunScene.players.length; i++) {
+            this.playersLocally.push(this.clonePlayerInfo(setMinigameBeamGunScene.players[i]));
         }
         this.background.style.backgroundImage = "url('/beam-bots/assets/images/beam_gun_bg.png')";
         KeybindsController.registerKeyCallback("a", this.aKeyEvent.bind(this));
