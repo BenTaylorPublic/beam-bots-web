@@ -48,7 +48,7 @@ export class AudioController {
         this.volume = volume / 100;
         for (let i: number = 0; i < this.audio.length; i++) {
             const audioData: AudioDataWithElements = this.audio[i];
-            for (let j: number = 0; j < this.audio.length; j++) {
+            for (let j: number = 0; j < this.audio[i].elements.length; j++) {
                 audioData.elements[j].volume = this.volume;
             }
         }
