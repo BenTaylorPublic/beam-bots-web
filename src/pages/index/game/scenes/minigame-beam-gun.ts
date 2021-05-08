@@ -19,6 +19,7 @@ import {SetMinigameBeamGunScene} from "../../../../beam-bots-shared/communicatio
 import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
 import {PlayerState} from "../player-state";
 import {MinigameBeamGunDirectionChange} from "../../../../beam-bots-shared/communication-objects/client-to-server/minigame-beam-gun/minigame-beam-gun-direction-change";
+import {MinigameBeamGunUpdate} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-update";
 
 export class MinigameBeamGun extends IGameScene {
     public name: GameScenes = "MinigameBeamGun";
@@ -82,6 +83,9 @@ export class MinigameBeamGun extends IGameScene {
         type: CommunicationObjectTypesServerToClient,
         communicationTypeAndObject: CommunicationTypeAndObject): void {
         switch (type) {
+            case "MinigameBeamGunUpdate":
+                this.updateReceived(communicationTypeAndObject.object as MinigameBeamGunUpdate);
+                break;
             default:
                 this.failedToHandleCommunication(communicationTypeAndObject);
                 break;
@@ -162,5 +166,13 @@ export class MinigameBeamGun extends IGameScene {
             newDirection: result
         };
         PlayerState.sendCommunication("MinigameBeamGunDirectionChange", direction);
+    }
+
+    private updateReceived(update: MinigameBeamGunUpdate): void {
+        this.lastUpdate = update.time;
+        this.playersLocally = [];
+        for (let i: number = 0; i < update.players.length; i++) {
+            this.playersLocally.push(this.clonePlayerInfo(update.players[i]));
+        }
     }
 }
