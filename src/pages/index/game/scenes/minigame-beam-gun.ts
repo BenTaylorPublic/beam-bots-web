@@ -15,6 +15,7 @@ import {
     MgBeamGunPlayerInfo
 } from "../../../../beam-bots-shared/scene-interfaces/minigame-beam-gun-interfaces";
 import {SetMinigameBeamGunScene} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/set-minigame-beam-gun-scene";
+import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
 
 export class MinigameBeamGun extends IGameScene {
     public name: GameScenes = "MinigameBeamGun";
@@ -27,6 +28,7 @@ export class MinigameBeamGun extends IGameScene {
     private winningPlayer: Player | null;
     private countdownText: 4 | 3 | 2 | 1 | 0 | -1;
     private playerVelocity: number;
+    private playerSize: number;
     private gravity: number;
     private boxSize: number;
     private boxesAcross: number;
@@ -42,6 +44,7 @@ export class MinigameBeamGun extends IGameScene {
         this.dStatus = "UP";
         this.winningPlayer = setMinigameBeamGunScene.winner;
         this.playerVelocity = setMinigameBeamGunScene.playerVelocity;
+        this.playerSize = setMinigameBeamGunScene.playerSize;
         this.gravity = setMinigameBeamGunScene.gravity;
         this.boxSize = setMinigameBeamGunScene.boxSize;
         this.boxesAcross = setMinigameBeamGunScene.boxesAcross;
@@ -110,6 +113,18 @@ export class MinigameBeamGun extends IGameScene {
                     this.context.drawImage(this.boxImage, xPos, yPos, this.boxSize, this.boxSize);
                 }
             }
+        }
+
+        for (let i: number = 0; i < this.playersLocally.length; i++) {
+            const playerInfo: MgBeamGunPlayerInfo = this.playersLocally[i];
+            if (playerInfo.status === "dead") {
+                continue;
+            }
+            if (updatePositions) {
+                //TODO
+            }
+            this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInfo.player.color);
+            this.context.fillRectWithPoint(playerInfo.location, this.playerSize, this.playerSize);
         }
 
 

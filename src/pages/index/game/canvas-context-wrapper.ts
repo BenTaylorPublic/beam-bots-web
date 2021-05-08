@@ -102,6 +102,10 @@ export class CanvasContextWrapper {
         this.context.fillRect(x, y, width, height);
     }
 
+    public fillRectWithPoint(point: Point2D, width: number, height: number): void {
+        this.context.fillRect(point.x, point.y, width, height);
+    }
+
     public strokeRect(x: number, y: number, width: number, height: number): void {
         this.context.strokeRect(x, y, width, height);
     }
