@@ -26,6 +26,13 @@ export class MinigameBeamGun extends IGameScene {
     private startTime: number;
     private winningPlayer: Player | null;
     private countdownText: 4 | 3 | 2 | 1 | 0 | -1;
+    private playerVelocity: number;
+    private gravity: number;
+    private boxSize: number;
+    private boxesAcross: number;
+    private boxesDeep: number;
+    private boxesY: number;
+    private boxImage: HTMLImageElement | null;
 
     constructor(setMinigameBeamGunScene: SetMinigameBeamGunScene) {
         super();
@@ -34,6 +41,12 @@ export class MinigameBeamGun extends IGameScene {
         this.aStatus = "UP";
         this.dStatus = "UP";
         this.winningPlayer = setMinigameBeamGunScene.winner;
+        this.playerVelocity = setMinigameBeamGunScene.playerVelocity;
+        this.gravity = setMinigameBeamGunScene.gravity;
+        this.boxSize = setMinigameBeamGunScene.boxSize;
+        this.boxesAcross = setMinigameBeamGunScene.boxesAcross;
+        this.boxesDeep = setMinigameBeamGunScene.boxesDeep;
+        this.boxesY = setMinigameBeamGunScene.boxesY;
         this.gameState = setMinigameBeamGunScene.gameState;
         if (this.gameState === "countdown") {
             this.countdownText = 4;
@@ -50,6 +63,13 @@ export class MinigameBeamGun extends IGameScene {
 
         AudioController.loadAudio([]);
         this.loadCountdownAudio();
+
+        this.boxImage = null;
+        const boxAsImage: HTMLImageElement = new Image();
+        boxAsImage.onload = () => {
+            this.boxImage = boxAsImage;
+        };
+        boxAsImage.src = "/beam-bots/assets/images/beam_gun_box.png";
     }
 
     public handleCommunication(
@@ -80,6 +100,19 @@ export class MinigameBeamGun extends IGameScene {
             this.gameState = "in progress";
             updatePositions = true;
         }
+
+        if (this.boxImage != null) {
+            //Drawing boxes
+            for (let y: number = 0; y < this.boxesDeep; y++) {
+                for (let x: number = 0; x < this.boxesAcross; x++) {
+                    const xPos: number = x * this.boxSize;
+                    const yPos: number = y * this.boxSize + this.boxesY;
+                    this.context.drawImage(this.boxImage, xPos, yPos, this.boxSize, this.boxSize);
+                }
+            }
+        }
+
+
         if (this.gameState === "winner") {
             this.drawWinnerBanner(this.winningPlayer);
         }
