@@ -117,6 +117,13 @@ export abstract class IGameScene {
         return countdownText;
     }
 
+    protected loadCountdownAudio(): void {
+        AudioController.loadAudio([{
+            name: "countdown",
+            url: "ice_circle_countdown.wav"
+        }]);
+    }
+
     public abstract handleCommunication(type: CommunicationObjectTypesServerToClient, communicationTypeAndObject: CommunicationTypeAndObject): void;
 
     protected abstract loop(ms: number): void;

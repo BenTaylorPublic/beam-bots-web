@@ -48,7 +48,7 @@ export class MinigameIceCircle extends IGameScene {
     constructor(setMinigameIceCircleScene: SetMinigameIceCircleScene) {
         super();
         this.lastUpdate = Date.now();
-        this.startTime = this.lastUpdate + Sconstants.MG_ICECIRCLE_COUNTDOWN_DELAY;
+        this.startTime = this.lastUpdate + Sconstants.MG_COUNTDOWN_DELAY;
         this.wStatus = "UP";
         this.aStatus = "UP";
         this.sStatus = "UP";
@@ -82,10 +82,9 @@ export class MinigameIceCircle extends IGameScene {
         }, {
             name: "collision",
             url: "ice_circle_collision.wav"
-        }, {
-            name: "countdown",
-            url: "ice_circle_countdown.wav"
         }]);
+
+        this.loadCountdownAudio();
 
         const spriteSheetStates: SpriteSheetState[] = [{
             name: "NOWHERE",

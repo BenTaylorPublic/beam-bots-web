@@ -8,6 +8,8 @@ import {
     CommunicationTypeAndObject
 } from "../../../beam-bots-shared/communication-objects/communication-object";
 import {SetMinigameIceCircleScene} from "../../../beam-bots-shared/communication-objects/server-to-client/minigame-ice-circle/set-minigame-ice-circle-scene";
+import {MinigameBeamGun} from "./scenes/minigame-beam-gun";
+import {SetMinigameBeamGunScene} from "../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/set-minigame-beam-gun-scene";
 
 export class SceneController {
     private static scene: IGameScene | null;
@@ -28,6 +30,9 @@ export class SceneController {
         switch (type) {
             case "SetMinigameIceCircleScene":
                 this.setScene("MinigameIceCircle", communicationTypeAndObject.object);
+                return;
+            case "SetMinigameBeamGunScene":
+                this.setScene("MinigameBeamGun", communicationTypeAndObject.object);
                 return;
             case "SetLobbyScene":
                 this.setScene("Lobby");
@@ -50,6 +55,9 @@ export class SceneController {
                 break;
             case "MinigameIceCircle":
                 this.scene = new MinigameIceCircle(object as SetMinigameIceCircleScene);
+                break;
+            case "MinigameBeamGun":
+                this.scene = new MinigameBeamGun(object as SetMinigameBeamGunScene);
                 break;
             default:
                 throw ErrorService.error(1010, `Unknown scene '${scene}'`);

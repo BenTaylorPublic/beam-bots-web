@@ -30,7 +30,7 @@ export class MinigameBeamGun extends IGameScene {
     constructor(setMinigameBeamGunScene: SetMinigameBeamGunScene) {
         super();
         this.lastUpdate = Date.now();
-        this.startTime = this.lastUpdate + Sconstants.MG_ICECIRCLE_COUNTDOWN_DELAY;
+        this.startTime = this.lastUpdate + Sconstants.MG_COUNTDOWN_DELAY;
         this.aStatus = "UP";
         this.dStatus = "UP";
         this.winningPlayer = setMinigameBeamGunScene.winner;
@@ -49,6 +49,7 @@ export class MinigameBeamGun extends IGameScene {
         KeybindsController.registerKeyCallback("d", this.dKeyEvent.bind(this));
 
         AudioController.loadAudio([]);
+        this.loadCountdownAudio();
     }
 
     public handleCommunication(
