@@ -127,8 +127,9 @@ export class MinigameBeamGun extends IGameScene {
             if (playerInfo.status === "dead") {
                 continue;
             }
+
             if (updatePositions) {
-                //TODO
+                HelperSharedFunctions.mgBeamGunHandleMovement(playerInfo, ms, this.playerXVelocity);
             }
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInfo.player.color);
             this.context.fillRectWithPoint(playerInfo.location, this.playerSize, this.playerSize);
