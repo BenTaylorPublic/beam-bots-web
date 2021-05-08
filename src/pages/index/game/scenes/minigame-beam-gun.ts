@@ -129,7 +129,7 @@ export class MinigameBeamGun extends IGameScene {
             }
 
             if (updatePositions) {
-                HelperSharedFunctions.mgBeamGunHandleMovement(playerInfo, ms, this.playerXVelocity);
+                HelperSharedFunctions.mgBeamGunHandleMovement(playerInfo, ms, this.playerXVelocity, this.playerSize);
             }
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInfo.player.color);
             this.context.fillRectWithPoint(playerInfo.location, this.playerSize, this.playerSize);
