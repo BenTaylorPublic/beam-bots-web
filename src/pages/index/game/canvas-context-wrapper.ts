@@ -7,9 +7,14 @@ export class CanvasContextWrapper {
     private context: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
 
-    constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
+    constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
-        this.context = context;
+        this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+        this.context.imageSmoothingEnabled = false;
+        this.updateScaling();
+    }
+
+    public updateScaling(): void {
         this.context.setTransform(1, 0, 0, 1, 0, 0);
         this.context.scale(this.canvas.height / Sconstants.GAME_LOGIC_HEIGHT, this.canvas.height / Sconstants.GAME_LOGIC_HEIGHT);
     }
@@ -95,5 +100,9 @@ export class CanvasContextWrapper {
 
     public fillRect(x: number, y: number, width: number, height: number): void {
         this.context.fillRect(x, y, width, height);
+    }
+
+    public strokeRect(x: number, y: number, width: number, height: number): void {
+        this.context.strokeRect(x, y, width, height);
     }
 }

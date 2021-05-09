@@ -43,7 +43,12 @@ export class ConstantsWeb {
     public static BROWN3: string = "#BD7862";
     public static BROWN4: string = "#FFC9B9";
 
+    public static SOUND_PATH: string = "/beam-bots/assets/sounds/";
+
     //Scenes
     public static MG_ICECIRCLE_DRAW_ELLIPSE: boolean = false;
     public static MG_ICECIRCLE_ANIMATION_MS: number = 100;
+
+    public static LOBBY_NAME_FONT_SIZE: number = 130;
+    public static LOBBY_TIP_HEADING_FONT_SIZE: number = 50;
 }

@@ -22,7 +22,7 @@ export class KeybindsController {
         const keys: string[] = Object.keys(this.keysToCallbacks);
         for (let i: number = 0; i < keys.length; i++) {
             const key: string = keys[i];
-            if (key !== "escape") {
+            if (key !== "`") {
                 delete this.keysToCallbacks[key];
             }
         }

@@ -1,8 +1,8 @@
-import {AudioData} from "../../../shared/interfaces";
+import {AudioData, AudioDataWithElements} from "../../../shared/interfaces";
 import {ConstantsWeb} from "../../../shared/constants-web";
 
 export class AudioController {
-    private static audio: AudioData[];
+    private static audio: AudioDataWithElements[];
     private static volume: number;
 
     public static initialize(): void {
@@ -12,9 +12,14 @@ export class AudioController {
 
     public static loadAudio(audioDataToLoad: AudioData[]): void {
         for (let i: number = 0; i < audioDataToLoad.length; i++) {
-            const audioData: AudioData = audioDataToLoad[i];
-            audioData.element = new Audio("/beam-bots/assets/sounds/" + audioData.url);
-            audioData.element.volume = this.volume;
+            const audioData: AudioDataWithElements = {
+                url: audioDataToLoad[i].url,
+                name: audioDataToLoad[i].name,
+                elements: []
+            };
+            const element: HTMLAudioElement = new Audio(ConstantsWeb.SOUND_PATH + audioData.url);
+            element.volume = this.volume;
+            audioData.elements.push(element);
             this.audio.push(audioData);
         }
     }
@@ -26,9 +31,9 @@ export class AudioController {
         }
 
         for (let i: number = 0; i < this.audio.length; i++) {
-            const audioData: AudioData = this.audio[i];
-            if (audioData.name === name && audioData.element != null) {
-                audioData.element.play();
+            const audioData: AudioDataWithElements = this.audio[i];
+            if (audioData.name === name) {
+                this.play(audioData);
                 return;
             }
         }
@@ -42,10 +47,24 @@ export class AudioController {
     public static setVolume(volume: number): void {
         this.volume = volume / 100;
         for (let i: number = 0; i < this.audio.length; i++) {
-            const audioData: AudioData = this.audio[i];
-            if (audioData.element != null) {
-                audioData.element.volume = this.volume;
+            const audioData: AudioDataWithElements = this.audio[i];
+            for (let j: number = 0; j < this.audio[i].elements.length; j++) {
+                audioData.elements[j].volume = this.volume;
             }
         }
+    }
+
+    private static play(audioData: AudioDataWithElements): void {
+        for (let i: number = 0; i < audioData.elements.length; i++) {
+            const element: HTMLAudioElement = audioData.elements[i];
+            if (element.paused) {
+                audioData.elements[i].play();
+                return;
+            }
+        }
+        const newElement: HTMLAudioElement = new Audio(ConstantsWeb.SOUND_PATH + audioData.url);
+        newElement.volume = this.volume;
+        audioData.elements.push(newElement);
+        newElement.play();
     }
 }

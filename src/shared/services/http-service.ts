@@ -5,7 +5,7 @@ import {TCallback, VoidCallback} from "../types";
 export class HttpService {
     public static serverUrl: string;
     private static httpServerPath: string = "/beam-bots-server";
-    private static password: string;
+    private static clientPassword: string;
 
     public static initialize(onSettings: boolean = false): void {
         if (ConstantsWeb.USE_HTTPS_SERVER) {
@@ -20,12 +20,12 @@ export class HttpService {
                 throw ErrorService.error(1006, "password is null, go to /beam-bots/settings");
             }
             this.serverUrl = serverUrl;
-            this.password = password;
+            this.clientPassword = password;
         }
     }
 
     public static setPassword(password: string): void {
-        this.password = password;
+        this.clientPassword = password;
     }
 
     public static get<T>(url: string, password: string, successCallback: TCallback<T> | VoidCallback, errorCallback: VoidCallback | null = null): void {
@@ -43,6 +43,17 @@ export class HttpService {
         const request = new XMLHttpRequest();
         request.onloadend = () => this.handleAllResponses<T>(request, successCallback, errorCallback, url);
         request.open("POST", this.getFullUrl(url));
+        request.setRequestHeader("Content-Type", "application/json");
+        request.setRequestHeader("Response-Type", "application/json");
+        request.send();
+    }
+
+    public static put<T>(url: string, password: string, successCallback: TCallback<T> | VoidCallback, errorCallback: VoidCallback | null = null): void {
+        const request = new XMLHttpRequest();
+        request.onloadend = () => this.handleAllResponses<T>(request, successCallback, errorCallback, url);
+        request.open("PUT", this.getFullUrl(url));
+
+        request.setRequestHeader("Authorization", password);
         request.setRequestHeader("Content-Type", "application/json");
         request.setRequestHeader("Response-Type", "application/json");
         request.send();

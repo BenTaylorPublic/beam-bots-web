@@ -16,6 +16,12 @@ export class SceneController {
         this.scene = null;
     }
 
+    public static updateScaling(): void {
+        if (this.scene != null) {
+            this.scene.context.updateScaling();
+        }
+    }
+
     public static handleCommunication(communicationTypeAndObject: CommunicationTypeAndObject): void {
         const type: CommunicationObjectTypesServerToClient = communicationTypeAndObject.type as CommunicationObjectTypesServerToClient;
 

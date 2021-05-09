@@ -59,6 +59,11 @@ export class AnimatedSpriteSheet {
     }
 
     public setNewState(stateName: string): void {
+        if (this.currentState.name === stateName) {
+            //Ignore request
+            return;
+        }
+
         for (let i: number = 0; i < this.states.length; i++) {
             if (this.states[i].name === stateName) {
                 this.currentState = this.states[i];
