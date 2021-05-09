@@ -48,7 +48,8 @@ export class PlayerState {
         this.player = {
             id: -1,
             name: username,
-            color: "blue"
+            color: "blue",
+            admin: false
         };
         this.sendCommunication<ClientToServerHello>("ClientToServerHello", {
             name: username,
