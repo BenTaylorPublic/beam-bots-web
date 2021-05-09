@@ -9,11 +9,13 @@ import {LobbyStartButtonClicked} from "../../../../beam-bots-shared/communicatio
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
 import {ConstantsWeb} from "../../../../shared/constants-web";
+import {Player} from "../../../../beam-bots-shared/interfaces";
 
 export class Lobby extends IGameScene {
     public name: GameScenes = "Lobby";
     private logo: HTMLImageElement | null;
     private escapeMenuTip: HTMLImageElement | null;
+    private crown: HTMLImageElement | null;
 
     constructor() {
         super();
@@ -21,6 +23,7 @@ export class Lobby extends IGameScene {
         this.setupOverlay();
         this.logo = null;
         this.escapeMenuTip = null;
+        this.crown = null;
 
         const logoAsImage: HTMLImageElement = new Image();
         logoAsImage.onload = () => {
@@ -37,6 +40,12 @@ export class Lobby extends IGameScene {
             this.escapeMenuTip = escapeMenuTipAsImage;
         };
         escapeMenuTipAsImage.src = "/beam-bots/assets/images/lobby_escape_menu_tip.png";
+
+        const crownAsImage: HTMLImageElement = new Image();
+        crownAsImage.onload = () => {
+            this.crown = crownAsImage;
+        };
+        crownAsImage.src = "/beam-bots/assets/images/lobby_crown.png";
     }
 
     public handleCommunication(
@@ -56,10 +65,28 @@ export class Lobby extends IGameScene {
             const x: number = (Sconstants.GAME_LOGIC_WIDTH - this.logo.width) / 2;
             this.context.drawImage(this.logo, x, 0, this.logo.width, this.logo.height);
         }
+
         this.context.textAlign = "left";
+        //If there is a crown to draw, the names move out
+        let textStartX: number = 0;
         for (let i: number = 0; i < PlayerState.allPlayers.length; i++) {
-            this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(PlayerState.allPlayers[i].color);
-            this.context.fillText(PlayerState.allPlayers[i].name, 0, (i + 1) * ConstantsWeb.LOBBY_NAME_FONT_SIZE + 250);
+            if (PlayerState.allPlayers[i].admin) {
+                textStartX = 170;
+                break;
+            }
+        }
+
+        for (let i: number = 0; i < PlayerState.allPlayers.length; i++) {
+            const player: Player = PlayerState.allPlayers[i];
+            const y: number = (i + 1) * ConstantsWeb.LOBBY_NAME_FONT_SIZE + 250;
+
+            if (player.admin &&
+                this.crown != null) {
+                this.context.drawImage(this.crown, 0, y - ConstantsWeb.LOBBY_NAME_FONT_SIZE, 150, 150);
+            }
+
+            this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(player.color);
+            this.context.fillText(player.name, textStartX, y);
         }
 
         //Tips box
