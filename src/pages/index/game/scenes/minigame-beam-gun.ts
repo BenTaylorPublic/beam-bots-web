@@ -4,7 +4,7 @@ import {
     CommunicationObjectTypesServerToClient,
     CommunicationTypeAndObject
 } from "../../../../beam-bots-shared/communication-objects/communication-object";
-import {Player} from "../../../../beam-bots-shared/interfaces";
+import {Player, Point2D} from "../../../../beam-bots-shared/interfaces";
 import {HelperSharedFunctions} from "../../../../beam-bots-shared/helper-shared-functions";
 import {KeybindsController} from "../keybinds-controller";
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
@@ -35,10 +35,8 @@ export class MinigameBeamGun extends IGameScene {
     private playerSize: number;
     private gravity: number;
     private boxSize: number;
-    private boxesAcross: number;
-    private boxesDeep: number;
-    private boxesY: number;
     private boxImage: HTMLImageElement | null;
+    private boxes: Point2D[];
 
     constructor(setMinigameBeamGunScene: SetMinigameBeamGunScene) {
         super();
@@ -51,9 +49,7 @@ export class MinigameBeamGun extends IGameScene {
         this.playerSize = setMinigameBeamGunScene.playerSize;
         this.gravity = setMinigameBeamGunScene.gravity;
         this.boxSize = setMinigameBeamGunScene.boxSize;
-        this.boxesAcross = setMinigameBeamGunScene.boxesAcross;
-        this.boxesDeep = setMinigameBeamGunScene.boxesDeep;
-        this.boxesY = setMinigameBeamGunScene.boxesY;
+        this.boxes = setMinigameBeamGunScene.boxes;
         this.gameState = setMinigameBeamGunScene.gameState;
         if (this.gameState === "countdown") {
             this.countdownText = 4;
@@ -113,12 +109,9 @@ export class MinigameBeamGun extends IGameScene {
 
         if (this.boxImage != null) {
             //Drawing boxes
-            for (let y: number = 0; y < this.boxesDeep; y++) {
-                for (let x: number = 0; x < this.boxesAcross; x++) {
-                    const xPos: number = x * this.boxSize;
-                    const yPos: number = y * this.boxSize + this.boxesY;
-                    this.context.drawImage(this.boxImage, xPos, yPos, this.boxSize, this.boxSize);
-                }
+            for (let i: number = 0; i < this.boxes.length; i++) {
+                const box: Point2D = this.boxes[i];
+                this.context.drawImage(this.boxImage, box.x, box.y, this.boxSize, this.boxSize);
             }
         }
 
