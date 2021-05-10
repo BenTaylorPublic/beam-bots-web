@@ -216,7 +216,7 @@ export class MinigameIceCircle extends IGameScene {
             this.context.strokeStyle = "#FF0000";
             this.context.stroke();
         }
-        const accelerationToAdd: number = this.acceleration / (1000 / ms);
+        const accelerationToAdd: number = HelperSharedFunctions.accelerationToVelocityUsingMs(this.acceleration, ms);
 
         for (let i: number = 0; i < this.playersLocally.length; i++) {
             const playerInfo: MgIceCirclePlayerInfo = this.playersLocally[i];
