@@ -141,7 +141,8 @@ export class MinigameBeamGun extends IGameScene {
             this.context.fillRectWithPoint(playerInfo.location, this.playerSize, this.playerSize);
         }
 
-        if (this.tryJumpUntil != null) {
+        if (this.tryJumpUntil != null &&
+            Date.now() < this.tryJumpUntil) {
             this.tryJump();
         }
 
