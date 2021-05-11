@@ -4,7 +4,7 @@ import {
     CommunicationObjectTypesServerToClient,
     CommunicationTypeAndObject
 } from "../../../../beam-bots-shared/communication-objects/communication-object";
-import {Player, Point2D} from "../../../../beam-bots-shared/interfaces";
+import {Player, Point2D, Rectangle} from "../../../../beam-bots-shared/interfaces";
 import {HelperSharedFunctions} from "../../../../beam-bots-shared/helper-shared-functions";
 import {KeybindsController} from "../keybinds-controller";
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
@@ -63,6 +63,7 @@ export class MinigameBeamGun extends IGameScene {
         this.background.style.backgroundImage = "url('/beam-bots/assets/images/beam_gun_bg.png')";
         KeybindsController.registerKeyCallback("a", this.aKeyEvent.bind(this));
         KeybindsController.registerKeyCallback("d", this.dKeyEvent.bind(this));
+        KeybindsController.registerKeyCallback(" ", this.spaceKeyEvent.bind(this));
 
         AudioController.loadAudio([]);
         this.loadCountdownAudio();
@@ -96,6 +97,40 @@ export class MinigameBeamGun extends IGameScene {
     public dKeyEvent(state: KeyboardEventKeyState): void {
         this.dStatus = state;
         this.setDirection();
+    }
+
+    public spaceKeyEvent(state: KeyboardEventKeyState): void {
+        if (state === "UP") {
+            return;
+        }
+
+        let playerRect: Rectangle | null = null;
+        for (let i: number = 0; i < this.playersLocally.length; i++) {
+            if (this.playersLocally[i].player.id === PlayerState.player.id) {
+                //me
+                playerRect = HelperSharedFunctions.convertPointToRectangle(this.playersLocally[i].location, this.playerSize, this.playerSize);
+            }
+        }
+
+        if (playerRect == null) {
+            console.error("Player was null?");
+            return;
+        }
+
+        let ontop: boolean = false;
+        for (let i: number = 0; i < this.boxes.length; i++) {
+            const box: Point2D = this.boxes[i];
+            const boxRect: Rectangle = HelperSharedFunctions.convertPointToRectangle(box, this.boxSize, this.boxSize);
+
+            if (HelperSharedFunctions.rectangleOnTopOfRectangle(playerRect, boxRect)) {
+                ontop = true;
+                break;
+            }
+        }
+
+        if (ontop) {
+            console.log("JUMP!");
+        }
     }
 
     protected loop(ms: number): void {
