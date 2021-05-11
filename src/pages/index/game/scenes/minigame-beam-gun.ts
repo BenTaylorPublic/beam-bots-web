@@ -20,6 +20,7 @@ import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
 import {PlayerState} from "../player-state";
 import {MinigameBeamGunDirectionChange} from "../../../../beam-bots-shared/communication-objects/client-to-server/minigame-beam-gun/minigame-beam-gun-direction-change";
 import {MinigameBeamGunUpdate} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-update";
+import {ConstantsWeb} from "../../../../shared/constants-web";
 
 export class MinigameBeamGun extends IGameScene {
     public name: GameScenes = "MinigameBeamGun";
@@ -37,10 +38,12 @@ export class MinigameBeamGun extends IGameScene {
     private boxSize: number;
     private boxImage: HTMLImageElement | null;
     private boxes: Point2D[];
+    private tryJumpUntil: number | null;
 
     constructor(setMinigameBeamGunScene: SetMinigameBeamGunScene) {
         super();
         this.lastUpdate = Date.now();
+        this.tryJumpUntil = null;
         this.startTime = this.lastUpdate + Sconstants.MG_COUNTDOWN_DELAY;
         this.aStatus = "UP";
         this.dStatus = "UP";
@@ -91,45 +94,20 @@ export class MinigameBeamGun extends IGameScene {
 
     public aKeyEvent(state: KeyboardEventKeyState): void {
         this.aStatus = state;
-        this.setDirection();
+        this.setDirectionAndMaybeJump();
     }
 
     public dKeyEvent(state: KeyboardEventKeyState): void {
         this.dStatus = state;
-        this.setDirection();
+        this.setDirectionAndMaybeJump();
     }
 
     public spaceKeyEvent(state: KeyboardEventKeyState): void {
         if (state === "UP") {
             return;
         }
-
-        let playerRect: Rectangle | null = null;
-        for (let i: number = 0; i < this.playersLocally.length; i++) {
-            if (this.playersLocally[i].player.id === PlayerState.player.id) {
-                //me
-                playerRect = HelperSharedFunctions.convertPointToRectangle(this.playersLocally[i].location, this.playerSize, this.playerSize);
-            }
-        }
-
-        if (playerRect == null) {
-            console.error("Player was null?");
-            return;
-        }
-
-        let ontop: boolean = false;
-        for (let i: number = 0; i < this.boxes.length; i++) {
-            const box: Point2D = this.boxes[i];
-            const boxRect: Rectangle = HelperSharedFunctions.convertPointToRectangle(box, this.boxSize, this.boxSize);
-
-            if (HelperSharedFunctions.rectangleOnTopOfRectangle(playerRect, boxRect)) {
-                ontop = true;
-                break;
-            }
-        }
-
-        if (ontop) {
-            console.log("JUMP!");
+        if (!this.tryJump()) {
+            this.tryJumpUntil = Date.now() + ConstantsWeb.MG_BEAMGUN_TRY_JUMP_FOR_MS;
         }
     }
 
@@ -163,6 +141,10 @@ export class MinigameBeamGun extends IGameScene {
             this.context.fillRectWithPoint(playerInfo.location, this.playerSize, this.playerSize);
         }
 
+        if (this.tryJumpUntil != null) {
+            this.tryJump();
+        }
+
 
         if (this.gameState === "winner") {
             this.drawWinnerBanner(this.winningPlayer);
@@ -170,6 +152,40 @@ export class MinigameBeamGun extends IGameScene {
         if (this.countdownText !== -1) {
             this.countdownText = this.handleCountdown(this.startTime, this.countdownText);
         }
+    }
+
+    //Returns true if it succeeds
+    private tryJump(): boolean {
+        let playerRect: Rectangle | null = null;
+        for (let i: number = 0; i < this.playersLocally.length; i++) {
+            if (this.playersLocally[i].player.id === PlayerState.player.id) {
+                //me
+                playerRect = HelperSharedFunctions.convertPointToRectangle(this.playersLocally[i].location, this.playerSize, this.playerSize);
+            }
+        }
+
+        if (playerRect == null) {
+            console.error("Player was null?");
+            return false;
+        }
+
+        let ontop: boolean = false;
+        for (let i: number = 0; i < this.boxes.length; i++) {
+            const box: Point2D = this.boxes[i];
+            const boxRect: Rectangle = HelperSharedFunctions.convertPointToRectangle(box, this.boxSize, this.boxSize);
+
+            if (HelperSharedFunctions.rectangleOnTopOfRectangle(playerRect, boxRect)) {
+                ontop = true;
+                break;
+            }
+        }
+
+        if (ontop) {
+            this.setDirectionAndMaybeJump(true);
+            this.tryJumpUntil = null;
+            return true;
+        }
+        return false;
     }
 
     private clonePlayerInfo(playerInfo: MgBeamGunPlayerInfo): MgBeamGunPlayerInfo {
@@ -183,7 +199,7 @@ export class MinigameBeamGun extends IGameScene {
         return result;
     }
 
-    private setDirection(): void {
+    private setDirectionAndMaybeJump(jump: boolean = false): void {
         let result: MgBeamGunDirection = "NOWHERE";
         if (this.aStatus === "DOWN") {
             result = "LEFT";
@@ -192,7 +208,8 @@ export class MinigameBeamGun extends IGameScene {
         }
 
         const direction: MinigameBeamGunDirectionChange = {
-            newDirection: result
+            newDirection: result,
+            jump: jump
         };
         PlayerState.sendCommunication("MinigameBeamGunDirectionChange", direction);
     }
