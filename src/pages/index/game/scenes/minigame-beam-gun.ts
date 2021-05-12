@@ -21,6 +21,7 @@ import {PlayerState} from "../player-state";
 import {MinigameBeamGunDirectionChange} from "../../../../beam-bots-shared/communication-objects/client-to-server/minigame-beam-gun/minigame-beam-gun-direction-change";
 import {MinigameBeamGunUpdate} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-update";
 import {ConstantsWeb} from "../../../../shared/constants-web";
+import {MinigameWinner} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-winner";
 
 export class MinigameBeamGun extends IGameScene {
     public name: GameScenes = "MinigameBeamGun";
@@ -37,7 +38,7 @@ export class MinigameBeamGun extends IGameScene {
     private gravity: number;
     private boxSize: number;
     private boxImage: HTMLImageElement | null;
-    private boxes: Point2D[];
+    private boxes: Rectangle[];
     private tryJumpUntil: number | null;
 
     constructor(setMinigameBeamGunScene: SetMinigameBeamGunScene) {
@@ -52,7 +53,11 @@ export class MinigameBeamGun extends IGameScene {
         this.playerSize = setMinigameBeamGunScene.playerSize;
         this.gravity = setMinigameBeamGunScene.gravity;
         this.boxSize = setMinigameBeamGunScene.boxSize;
-        this.boxes = setMinigameBeamGunScene.boxes;
+        this.boxes = [];
+        for (let i: number = 0; i < setMinigameBeamGunScene.boxes.length; i++) {
+            const box: Point2D = setMinigameBeamGunScene.boxes[i];
+            this.boxes.push(HelperSharedFunctions.convertPointToRectangle(box, this.boxSize, this.boxSize));
+        }
         this.gameState = setMinigameBeamGunScene.gameState;
         if (this.gameState === "countdown") {
             this.countdownText = 4;
@@ -85,6 +90,9 @@ export class MinigameBeamGun extends IGameScene {
         switch (type) {
             case "MinigameBeamGunUpdate":
                 this.updateReceived(communicationTypeAndObject.object as MinigameBeamGunUpdate);
+                break;
+            case "MinigameWinner":
+                this.winnerReceived(communicationTypeAndObject.object as MinigameWinner);
                 break;
             default:
                 this.failedToHandleCommunication(communicationTypeAndObject);
@@ -123,20 +131,25 @@ export class MinigameBeamGun extends IGameScene {
         if (this.boxImage != null) {
             //Drawing boxes
             for (let i: number = 0; i < this.boxes.length; i++) {
-                const box: Point2D = this.boxes[i];
+                const box: Point2D = this.boxes[i].topLeft;
                 this.context.drawImage(this.boxImage, box.x, box.y, this.boxSize, this.boxSize);
             }
         }
-
+        const notDeadPlayers: MgBeamGunPlayerInfo[] = [];
         for (let i: number = 0; i < this.playersLocally.length; i++) {
             const playerInfo: MgBeamGunPlayerInfo = this.playersLocally[i];
             if (playerInfo.status === "dead") {
                 continue;
             }
+            notDeadPlayers.push(playerInfo);
+        }
 
-            if (updatePositions) {
-                HelperSharedFunctions.mgBeamGunHandleMovement(playerInfo, ms, this.playerXVelocity, this.playerSize, this.gravity, this.boxes, this.boxSize);
-            }
+        if (updatePositions) {
+            HelperSharedFunctions.mgBeamGunHandleAllMovement(notDeadPlayers, ms, this.playerXVelocity, this.playerSize, this.gravity, this.boxes);
+        }
+
+        for (let i: number = 0; i < notDeadPlayers.length; i++) {
+            const playerInfo: MgBeamGunPlayerInfo = notDeadPlayers[i];
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInfo.player.color);
             this.context.fillRectWithPoint(playerInfo.location, this.playerSize, this.playerSize);
         }
@@ -146,7 +159,6 @@ export class MinigameBeamGun extends IGameScene {
             this.tryJump();
         }
 
-
         if (this.gameState === "winner") {
             this.drawWinnerBanner(this.winningPlayer);
         }
@@ -155,8 +167,17 @@ export class MinigameBeamGun extends IGameScene {
         }
     }
 
+    private winnerReceived(minigameBeamGunWinner: MinigameWinner): void {
+        this.gameState = "winner";
+        this.winningPlayer = minigameBeamGunWinner.winner;
+    }
+
     //Returns true if it succeeds
     private tryJump(): boolean {
+        if (this.gameState === "countdown") {
+            return false;
+        }
+
         let playerRect: Rectangle | null = null;
         for (let i: number = 0; i < this.playersLocally.length; i++) {
             if (this.playersLocally[i].player.id === PlayerState.player.id) {
@@ -172,8 +193,7 @@ export class MinigameBeamGun extends IGameScene {
 
         let ontop: boolean = false;
         for (let i: number = 0; i < this.boxes.length; i++) {
-            const box: Point2D = this.boxes[i];
-            const boxRect: Rectangle = HelperSharedFunctions.convertPointToRectangle(box, this.boxSize, this.boxSize);
+            const boxRect: Rectangle = this.boxes[i];
 
             if (HelperSharedFunctions.rectangleOnTopOfRectangle(playerRect, boxRect)) {
                 ontop = true;

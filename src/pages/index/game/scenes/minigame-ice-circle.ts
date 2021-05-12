@@ -18,12 +18,12 @@ import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
 import {HelperSharedFunctions} from "../../../../beam-bots-shared/helper-shared-functions";
 import {KeybindsController} from "../keybinds-controller";
 import {ConstantsWeb} from "../../../../shared/constants-web";
-import {MinigameIceCircleWinner} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-ice-circle/minigame-ice-circle-winner";
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 import {AudioController} from "../audio-controller";
 import {AnimatedSpriteSheet} from "../animated-sprite-sheet";
 import {ColorToAnimatedSpriteMap, KeyboardEventKeyState} from "../../../../shared/types";
 import {SpriteSheetState} from "../../../../shared/interfaces";
+import {MinigameWinner} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-winner";
 
 export class MinigameIceCircle extends IGameScene {
     public name: GameScenes = "MinigameIceCircle";
@@ -171,8 +171,8 @@ export class MinigameIceCircle extends IGameScene {
             case "MinigameIceCircleUpdate":
                 this.updateReceived(communicationTypeAndObject.object as MinigameIceCircleUpdate);
                 break;
-            case "MinigameIceCircleWinner":
-                this.winnerReceived(communicationTypeAndObject.object as MinigameIceCircleWinner);
+            case "MinigameWinner":
+                this.winnerReceived(communicationTypeAndObject.object as MinigameWinner);
                 break;
             default:
                 this.failedToHandleCommunication(communicationTypeAndObject);
@@ -248,7 +248,7 @@ export class MinigameIceCircle extends IGameScene {
         }
     }
 
-    private winnerReceived(minigameIceCircleWinner: MinigameIceCircleWinner): void {
+    private winnerReceived(minigameIceCircleWinner: MinigameWinner): void {
         this.gameState = "winner";
         this.winningPlayer = minigameIceCircleWinner.winner;
     }
