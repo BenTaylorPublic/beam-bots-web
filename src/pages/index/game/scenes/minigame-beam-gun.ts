@@ -178,11 +178,15 @@ export class MinigameBeamGun extends IGameScene {
             return false;
         }
 
+        const collidables: Rectangle[] = [...this.boxes];
+
         let playerRect: Rectangle | null = null;
         for (let i: number = 0; i < this.playersLocally.length; i++) {
             if (this.playersLocally[i].player.id === PlayerState.player.id) {
                 //me
                 playerRect = HelperSharedFunctions.convertPointToRectangle(this.playersLocally[i].location, this.playerSize, this.playerSize);
+            } else if (this.playersLocally[i].status !== "dead") {
+                collidables.push(HelperSharedFunctions.convertPointToRectangle(this.playersLocally[i].location, this.playerSize, this.playerSize));
             }
         }
 
@@ -192,10 +196,10 @@ export class MinigameBeamGun extends IGameScene {
         }
 
         let ontop: boolean = false;
-        for (let i: number = 0; i < this.boxes.length; i++) {
-            const boxRect: Rectangle = this.boxes[i];
+        for (let i: number = 0; i < collidables.length; i++) {
+            const collidable: Rectangle = collidables[i];
 
-            if (HelperSharedFunctions.rectangleOnTopOfRectangle(playerRect, boxRect)) {
+            if (HelperSharedFunctions.rectangleOnTopOfRectangle(playerRect, collidable)) {
                 ontop = true;
                 break;
             }
