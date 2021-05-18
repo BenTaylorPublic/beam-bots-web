@@ -22,6 +22,7 @@ import {MinigameBeamGunDirectionChange} from "../../../../beam-bots-shared/commu
 import {MinigameBeamGunUpdate} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-update";
 import {ConstantsWeb} from "../../../../shared/constants-web";
 import {MinigameWinner} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-winner";
+import {MinigameBeamGunTeleport} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-teleport";
 
 export class MinigameBeamGun extends IGameScene {
     public name: GameScenes = "MinigameBeamGun";
@@ -66,7 +67,7 @@ export class MinigameBeamGun extends IGameScene {
         }
         this.playersLocally = [];
         for (let i: number = 0; i < setMinigameBeamGunScene.players.length; i++) {
-            this.playersLocally.push(this.clonePlayerInfo(setMinigameBeamGunScene.players[i]));
+            this.playersLocally.push(setMinigameBeamGunScene.players[i]);
         }
         this.background.style.backgroundImage = "url('/beam-bots/assets/images/beam_gun_bg.png')";
         KeybindsController.registerKeyCallback("a", this.aKeyEvent.bind(this));
@@ -90,6 +91,9 @@ export class MinigameBeamGun extends IGameScene {
         switch (type) {
             case "MinigameBeamGunUpdate":
                 this.updateReceived(communicationTypeAndObject.object as MinigameBeamGunUpdate);
+                break;
+            case "MinigameBeamGunTeleport":
+                this.teleportReceived(communicationTypeAndObject.object as MinigameBeamGunTeleport);
                 break;
             case "MinigameWinner":
                 this.winnerReceived(communicationTypeAndObject.object as MinigameWinner);
@@ -213,17 +217,6 @@ export class MinigameBeamGun extends IGameScene {
         return false;
     }
 
-    private clonePlayerInfo(playerInfo: MgBeamGunPlayerInfo): MgBeamGunPlayerInfo {
-        const result: MgBeamGunPlayerInfo = {
-            direction: playerInfo.direction,
-            location: HelperSharedFunctions.clonePoint2D(playerInfo.location),
-            player: playerInfo.player,
-            status: playerInfo.status,
-            yVelocity: playerInfo.yVelocity
-        };
-        return result;
-    }
-
     private setDirectionAndMaybeJump(jump: boolean = false): void {
         let result: MgBeamGunDirection = "NOWHERE";
         if (this.aStatus === "DOWN") {
@@ -239,11 +232,15 @@ export class MinigameBeamGun extends IGameScene {
         PlayerState.sendCommunication("MinigameBeamGunDirectionChange", direction);
     }
 
+    private teleportReceived(teleport: MinigameBeamGunTeleport): void {
+
+    }
+
     private updateReceived(update: MinigameBeamGunUpdate): void {
         this.lastUpdate = update.time;
         this.playersLocally = [];
         for (let i: number = 0; i < update.players.length; i++) {
-            this.playersLocally.push(this.clonePlayerInfo(update.players[i]));
+            this.playersLocally.push(update.players[i]);
         }
     }
 }
