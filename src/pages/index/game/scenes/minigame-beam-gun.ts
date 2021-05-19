@@ -23,6 +23,11 @@ import {MinigameBeamGunUpdate} from "../../../../beam-bots-shared/communication-
 import {ConstantsWeb} from "../../../../shared/constants-web";
 import {MinigameWinner} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-winner";
 import {MinigameBeamGunTeleport} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-teleport";
+import {MinigameBeamGunGunReady} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-gun-ready";
+import {ErrorService} from "../../../../shared/services/error-service";
+import {MinigameBeamGunRequestFireGun} from "../../../../beam-bots-shared/communication-objects/client-to-server/minigame-beam-gun/minigame-beam-gun-request-fire-gun";
+import {MinigameBeamGunFireGun} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-fire-gun";
+import {MinigameBeamGunFireResult} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-fire-result";
 
 export class MinigameBeamGun extends IGameScene {
     public name: GameScenes = "MinigameBeamGun";
@@ -35,22 +40,26 @@ export class MinigameBeamGun extends IGameScene {
     private winningPlayer: Player | null;
     private countdownText: 4 | 3 | 2 | 1 | 0 | -1;
     private playerXVelocity: number;
+    private gunXVelocity: number;
     private playerSize: number;
     private gravity: number;
     private boxSize: number;
     private boxImage: HTMLImageElement | null;
     private boxes: Rectangle[];
     private tryJumpUntil: number | null;
+    private gunReady: boolean;
 
     constructor(setMinigameBeamGunScene: SetMinigameBeamGunScene) {
         super();
         this.lastUpdate = Date.now();
         this.tryJumpUntil = null;
+        this.gunReady = false;
         this.startTime = this.lastUpdate + Sconstants.MG_COUNTDOWN_DELAY;
         this.aStatus = "UP";
         this.dStatus = "UP";
         this.winningPlayer = setMinigameBeamGunScene.winner;
         this.playerXVelocity = setMinigameBeamGunScene.playerXVelocity;
+        this.gunXVelocity = setMinigameBeamGunScene.gunXVelocity;
         this.playerSize = setMinigameBeamGunScene.playerSize;
         this.gravity = setMinigameBeamGunScene.gravity;
         this.boxSize = setMinigameBeamGunScene.boxSize;
@@ -95,6 +104,15 @@ export class MinigameBeamGun extends IGameScene {
             case "MinigameBeamGunTeleport":
                 this.teleportReceived(communicationTypeAndObject.object as MinigameBeamGunTeleport);
                 break;
+            case "MinigameBeamGunGunReady":
+                this.gunReadyReceived(communicationTypeAndObject.object as MinigameBeamGunGunReady);
+                break;
+            case "MinigameBeamGunFireGun":
+                this.fireGunReceived(communicationTypeAndObject.object as MinigameBeamGunFireGun);
+                break;
+            case "MinigameBeamGunFireResult":
+                this.fireResultReceived(communicationTypeAndObject.object as MinigameBeamGunFireResult);
+                break;
             case "MinigameWinner":
                 this.winnerReceived(communicationTypeAndObject.object as MinigameWinner);
                 break;
@@ -118,7 +136,12 @@ export class MinigameBeamGun extends IGameScene {
         if (state === "UP") {
             return;
         }
-        if (!this.tryJump()) {
+        if (this.getThisPlayer().inGun) {
+            //Send regardless of if gun is ready
+            //Server will ignore if it isn't time yet
+            const fireGun: MinigameBeamGunRequestFireGun = {};
+            PlayerState.sendCommunication("MinigameBeamGunRequestFireGun", fireGun);
+        } else if (!this.tryJump()) {
             this.tryJumpUntil = Date.now() + ConstantsWeb.MG_BEAMGUN_TRY_JUMP_FOR_MS;
         }
     }
@@ -149,7 +172,7 @@ export class MinigameBeamGun extends IGameScene {
         }
 
         if (updatePositions) {
-            HelperSharedFunctions.mgBeamGunHandleAllMovement(notDeadPlayers, ms, this.playerXVelocity, this.playerSize, this.gravity, this.boxes);
+            HelperSharedFunctions.mgBeamGunHandleAllMovement(notDeadPlayers, ms, this.playerXVelocity, this.playerSize, this.gravity, this.boxes, this.gunXVelocity);
         }
 
         for (let i: number = 0; i < notDeadPlayers.length; i++) {
@@ -232,8 +255,32 @@ export class MinigameBeamGun extends IGameScene {
         PlayerState.sendCommunication("MinigameBeamGunDirectionChange", direction);
     }
 
-    private teleportReceived(teleport: MinigameBeamGunTeleport): void {
+    private gunReadyReceived(gunReady: MinigameBeamGunGunReady): void {
+        this.gunReady = true;
+    }
 
+    private fireGunReceived(fireGun: MinigameBeamGunFireGun): void {
+        for (let i: number = 0; i < this.playersLocally.length; i++) {
+            if (fireGun.playerInfo.player.id === this.playersLocally[i].player.id) {
+                this.playersLocally[i] = fireGun.playerInfo;
+            }
+        }
+    }
+
+    private fireResultReceived(fireResult: MinigameBeamGunFireResult): void {
+        //TODO: Mark players as dead if in list
+    }
+
+    private teleportReceived(teleport: MinigameBeamGunTeleport): void {
+        for (let i: number = 0; i < this.playersLocally.length; i++) {
+            if (teleport.playerToGun.player.id === this.playersLocally[i].player.id) {
+                this.playersLocally[i] = teleport.playerToGun;
+            }
+            if (teleport.playerToGround != null &&
+                teleport.playerToGround.player.id === this.playersLocally[i].player.id) {
+                this.playersLocally[i] = teleport.playerToGround;
+            }
+        }
     }
 
     private updateReceived(update: MinigameBeamGunUpdate): void {
@@ -242,5 +289,14 @@ export class MinigameBeamGun extends IGameScene {
         for (let i: number = 0; i < update.players.length; i++) {
             this.playersLocally.push(update.players[i]);
         }
+    }
+
+    private getThisPlayer(): MgBeamGunPlayerInfo {
+        for (let i: number = 0; i < this.playersLocally.length; i++) {
+            if (this.playersLocally[i].player.id === PlayerState.player.id) {
+                return this.playersLocally[i];
+            }
+        }
+        throw ErrorService.error(1017, "Couldn't find this player in `getThisPlayer()`");
     }
 }
