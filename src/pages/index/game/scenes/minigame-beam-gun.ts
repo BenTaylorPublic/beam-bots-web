@@ -48,12 +48,14 @@ export class MinigameBeamGun extends IGameScene {
     private boxes: Rectangle[];
     private tryJumpUntil: number | null;
     private gunReady: boolean;
+    private gunShooting: boolean;
 
     constructor(setMinigameBeamGunScene: SetMinigameBeamGunScene) {
         super();
         this.lastUpdate = Date.now();
         this.tryJumpUntil = null;
         this.gunReady = false;
+        this.gunShooting = false;
         this.startTime = this.lastUpdate + Sconstants.MG_COUNTDOWN_DELAY;
         this.aStatus = "UP";
         this.dStatus = "UP";
@@ -172,7 +174,15 @@ export class MinigameBeamGun extends IGameScene {
         }
 
         if (updatePositions) {
-            HelperSharedFunctions.mgBeamGunHandleAllMovement(notDeadPlayers, ms, this.playerXVelocity, this.playerSize, this.gravity, this.boxes, this.gunXVelocity);
+            HelperSharedFunctions.mgBeamGunHandleAllMovement(
+                notDeadPlayers,
+                ms,
+                this.playerXVelocity,
+                this.playerSize,
+                this.gravity,
+                this.boxes,
+                this.gunXVelocity,
+                this.gunShooting);
         }
 
         for (let i: number = 0; i < notDeadPlayers.length; i++) {
@@ -260,6 +270,7 @@ export class MinigameBeamGun extends IGameScene {
     }
 
     private fireGunReceived(fireGun: MinigameBeamGunFireGun): void {
+        this.gunShooting = true;
         for (let i: number = 0; i < this.playersLocally.length; i++) {
             if (fireGun.playerInfo.player.id === this.playersLocally[i].player.id) {
                 this.playersLocally[i] = fireGun.playerInfo;
@@ -268,6 +279,7 @@ export class MinigameBeamGun extends IGameScene {
     }
 
     private fireResultReceived(fireResult: MinigameBeamGunFireResult): void {
+        this.gunShooting = false;
         //TODO: Mark players as dead if in list
     }
 
