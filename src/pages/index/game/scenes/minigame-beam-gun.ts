@@ -28,6 +28,7 @@ import {ErrorService} from "../../../../shared/services/error-service";
 import {MinigameBeamGunRequestFireGun} from "../../../../beam-bots-shared/communication-objects/client-to-server/minigame-beam-gun/minigame-beam-gun-request-fire-gun";
 import {MinigameBeamGunFireGun} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-fire-gun";
 import {MinigameBeamGunFireResult} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-fire-result";
+import {MinigameBeamGunEndOfKillzone} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-end-of-killzone";
 
 export class MinigameBeamGun extends IGameScene {
     public name: GameScenes = "MinigameBeamGun";
@@ -116,6 +117,9 @@ export class MinigameBeamGun extends IGameScene {
                 break;
             case "MinigameBeamGunFireResult":
                 this.fireResultReceived(communicationTypeAndObject.object as MinigameBeamGunFireResult);
+                break;
+            case "MinigameBeamGunEndOfKillzone":
+                this.endOfKillzoneReceived(communicationTypeAndObject.object as MinigameBeamGunEndOfKillzone);
                 break;
             case "MinigameWinner":
                 this.winnerReceived(communicationTypeAndObject.object as MinigameWinner);
@@ -301,8 +305,12 @@ export class MinigameBeamGun extends IGameScene {
     }
 
     private fireResultReceived(fireResult: MinigameBeamGunFireResult): void {
+        //TODO: Remove the boxes
+    }
+
+
+    private endOfKillzoneReceived(endOfKillzone: MinigameBeamGunEndOfKillzone): void {
         this.gunShooting = false;
-        //TODO: Mark players as dead if in list
     }
 
     private teleportReceived(teleport: MinigameBeamGunTeleport): void {
