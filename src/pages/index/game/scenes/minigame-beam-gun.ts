@@ -49,6 +49,7 @@ export class MinigameBeamGun extends IGameScene {
     private tryJumpUntil: number | null;
     private gunReady: boolean;
     private gunShooting: boolean;
+    private gunBeamWidth: number;
 
     constructor(setMinigameBeamGunScene: SetMinigameBeamGunScene) {
         super();
@@ -65,6 +66,7 @@ export class MinigameBeamGun extends IGameScene {
         this.playerSize = setMinigameBeamGunScene.playerSize;
         this.gravity = setMinigameBeamGunScene.gravity;
         this.boxSize = setMinigameBeamGunScene.boxSize;
+        this.gunBeamWidth = setMinigameBeamGunScene.gunBeamWidth;
         this.boxes = [];
         for (let i: number = 0; i < setMinigameBeamGunScene.boxes.length; i++) {
             const box: Point2D = setMinigameBeamGunScene.boxes[i];
@@ -185,10 +187,30 @@ export class MinigameBeamGun extends IGameScene {
                 this.gunShooting);
         }
 
+        //Drawing the players
         for (let i: number = 0; i < notDeadPlayers.length; i++) {
             const playerInfo: MgBeamGunPlayerInfo = notDeadPlayers[i];
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInfo.player.color);
             this.context.fillRectWithPoint(playerInfo.location, this.playerSize, this.playerSize);
+        }
+
+        //Drawing the beam
+        if (this.gunShooting) {
+            let playerInGun: MgBeamGunPlayerInfo | null = null;
+            for (let i: number = 0; i < notDeadPlayers.length; i++) {
+                if (notDeadPlayers[i].inGun) {
+                    playerInGun = notDeadPlayers[i];
+                    break;
+                }
+            }
+            if (playerInGun != null) {
+                this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInGun.player.color, 2);
+                const beamTopLeft: Point2D = {
+                    x: playerInGun.location.x + (this.playerSize / 2) - (this.gunBeamWidth / 2),
+                    y: 0
+                };
+                this.context.fillRectWithPoint(beamTopLeft, this.gunBeamWidth, Sconstants.GAME_LOGIC_HEIGHT);
+            }
         }
 
         if (this.tryJumpUntil != null &&
