@@ -241,7 +241,16 @@ export class MinigameBeamGun extends IGameScene {
             const playerInfo: MgBeamGunPlayerInfo = notDeadPlayers[i];
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInfo.player.color);
             this.context.fillRectWithPoint(playerInfo.location, this.playerSize, this.playerSize);
+            if (playerInfo.inGun &&
+                this.gunReady) {
+                const topLeft: Point2D = {
+                    x: playerInfo.location.x + (this.playerSize / 2) - (this.gunBeamWidth / 2),
+                    y: playerInfo.location.y + this.playerSize
+                };
+                this.context.fillRectWithPoint(topLeft, this.gunBeamWidth, 10);
+            }
         }
+
 
         if (this.tryJumpUntil != null &&
             Date.now() < this.tryJumpUntil) {
@@ -322,6 +331,7 @@ export class MinigameBeamGun extends IGameScene {
     }
 
     private fireGunReceived(fireGun: MinigameBeamGunFireGun): void {
+        this.gunReady = false;
         this.gunShooting = "charging";
         for (let i: number = 0; i < this.playersLocally.length; i++) {
             if (fireGun.playerInfo.player.id === this.playersLocally[i].player.id) {
