@@ -305,7 +305,15 @@ export class MinigameBeamGun extends IGameScene {
     }
 
     private fireResultReceived(fireResult: MinigameBeamGunFireResult): void {
-        //TODO: Remove the boxes
+        for (let i: number = 0; i < fireResult.boxesDestroyed.length; i++) {
+            const box: Point2D = fireResult.boxesDestroyed[i];
+            for (let j: number = this.boxes.length - 1; j >= 0; j--) {
+                if (HelperSharedFunctions.match(this.boxes[j].topLeft, box)) {
+                    this.boxes.splice(j, 1);
+                    break;
+                }
+            }
+        }
     }
 
 
