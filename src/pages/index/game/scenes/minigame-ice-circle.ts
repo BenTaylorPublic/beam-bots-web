@@ -78,7 +78,7 @@ export class MinigameIceCircle extends IGameScene {
 
         AudioController.loadAudio([{
             name: "falling",
-            url: "ice_circle_falling.wav"
+            url: "death_stand.wav"
         }, {
             name: "collision",
             url: "ice_circle_collision.wav"
