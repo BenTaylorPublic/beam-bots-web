@@ -51,11 +51,13 @@ export class MinigameBeamGun extends IGameScene {
     private gunReady: boolean;
     private gunShooting: boolean;
     private gunBeamWidth: number;
+    private gunBeamBottom: number;
 
     constructor(setMinigameBeamGunScene: SetMinigameBeamGunScene) {
         super();
         this.lastUpdate = Date.now();
         this.tryJumpUntil = null;
+        this.gunBeamBottom = 0;
         this.gunReady = false;
         this.gunShooting = false;
         this.startTime = this.lastUpdate + Sconstants.MG_COUNTDOWN_DELAY;
@@ -71,7 +73,11 @@ export class MinigameBeamGun extends IGameScene {
         this.boxes = [];
         for (let i: number = 0; i < setMinigameBeamGunScene.boxes.length; i++) {
             const box: Point2D = setMinigameBeamGunScene.boxes[i];
-            this.boxes.push(HelperSharedFunctions.convertPointToRectangle(box, this.boxSize, this.boxSize));
+            const rect: Rectangle = HelperSharedFunctions.convertPointToRectangle(box, this.boxSize, this.boxSize);
+            this.boxes.push(rect);
+            if (rect.bottomLeft.y > this.gunBeamBottom) {
+                this.gunBeamBottom = rect.bottomLeft.y;
+            }
         }
         this.gameState = setMinigameBeamGunScene.gameState;
         if (this.gameState === "countdown") {
@@ -163,13 +169,6 @@ export class MinigameBeamGun extends IGameScene {
             updatePositions = true;
         }
 
-        if (this.boxImage != null) {
-            //Drawing boxes
-            for (let i: number = 0; i < this.boxes.length; i++) {
-                const box: Point2D = this.boxes[i].topLeft;
-                this.context.drawImage(this.boxImage, box.x, box.y, this.boxSize, this.boxSize);
-            }
-        }
         const notDeadPlayers: MgBeamGunPlayerInfo[] = [];
         for (let i: number = 0; i < this.playersLocally.length; i++) {
             const playerInfo: MgBeamGunPlayerInfo = this.playersLocally[i];
@@ -177,6 +176,33 @@ export class MinigameBeamGun extends IGameScene {
                 continue;
             }
             notDeadPlayers.push(playerInfo);
+        }
+
+        //Drawing the beam
+        if (this.gunShooting) {
+            let playerInGun: MgBeamGunPlayerInfo | null = null;
+            for (let i: number = 0; i < notDeadPlayers.length; i++) {
+                if (notDeadPlayers[i].inGun) {
+                    playerInGun = notDeadPlayers[i];
+                    break;
+                }
+            }
+            if (playerInGun != null) {
+                this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInGun.player.color, 2);
+                const beamTopLeft: Point2D = {
+                    x: playerInGun.location.x + (this.playerSize / 2) - (this.gunBeamWidth / 2),
+                    y: 0
+                };
+                this.context.fillRectWithPoint(beamTopLeft, this.gunBeamWidth, this.gunBeamBottom);
+            }
+        }
+
+        if (this.boxImage != null) {
+            //Drawing boxes
+            for (let i: number = 0; i < this.boxes.length; i++) {
+                const box: Point2D = this.boxes[i].topLeft;
+                this.context.drawImage(this.boxImage, box.x, box.y, this.boxSize, this.boxSize);
+            }
         }
 
         if (updatePositions) {
@@ -196,25 +222,6 @@ export class MinigameBeamGun extends IGameScene {
             const playerInfo: MgBeamGunPlayerInfo = notDeadPlayers[i];
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInfo.player.color);
             this.context.fillRectWithPoint(playerInfo.location, this.playerSize, this.playerSize);
-        }
-
-        //Drawing the beam
-        if (this.gunShooting) {
-            let playerInGun: MgBeamGunPlayerInfo | null = null;
-            for (let i: number = 0; i < notDeadPlayers.length; i++) {
-                if (notDeadPlayers[i].inGun) {
-                    playerInGun = notDeadPlayers[i];
-                    break;
-                }
-            }
-            if (playerInGun != null) {
-                this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInGun.player.color, 2);
-                const beamTopLeft: Point2D = {
-                    x: playerInGun.location.x + (this.playerSize / 2) - (this.gunBeamWidth / 2),
-                    y: 0
-                };
-                this.context.fillRectWithPoint(beamTopLeft, this.gunBeamWidth, Sconstants.GAME_LOGIC_HEIGHT);
-            }
         }
 
         if (this.tryJumpUntil != null &&
@@ -315,7 +322,6 @@ export class MinigameBeamGun extends IGameScene {
             }
         }
     }
-
 
     private endOfKillzoneReceived(endOfKillzone: MinigameBeamGunEndOfKillzone): void {
         this.gunShooting = false;
