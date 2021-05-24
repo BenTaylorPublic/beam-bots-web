@@ -81,7 +81,7 @@ export class MinigameIceCircle extends IGameScene {
             url: "death_stand.wav"
         }, {
             name: "collision",
-            url: "ice_circle_collision.wav"
+            url: "chck.wav"
         }]);
 
         this.loadCountdownAudio();

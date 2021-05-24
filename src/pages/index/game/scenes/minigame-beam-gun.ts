@@ -96,7 +96,20 @@ export class MinigameBeamGun extends IGameScene {
         KeybindsController.registerKeyCallback("d", this.dKeyEvent.bind(this));
         KeybindsController.registerKeyCallback(" ", this.spaceKeyEvent.bind(this));
 
-        AudioController.loadAudio([]);
+        AudioController.loadAudio([{
+            name: "death",
+            url: "death_stand.wav"
+        }, {
+            name: "firing",
+            url: "beam_gun_firing.wav"
+        }, {
+            name: "teleport",
+            url: "beam_gun_teleport.wav"
+        }, {
+            name: "gun ready",
+            url: "chck.wav"
+        }]);
+
         this.loadCountdownAudio();
 
         this.boxImage = null;
@@ -328,11 +341,13 @@ export class MinigameBeamGun extends IGameScene {
 
     private gunReadyReceived(gunReady: MinigameBeamGunGunReady): void {
         this.gunReady = true;
+        AudioController.playAudio("gun ready");
     }
 
     private fireGunReceived(fireGun: MinigameBeamGunFireGun): void {
         this.gunReady = false;
         this.gunShooting = "charging";
+        AudioController.playAudio("firing");
         for (let i: number = 0; i < this.playersLocally.length; i++) {
             if (fireGun.playerInfo.player.id === this.playersLocally[i].player.id) {
                 this.playersLocally[i] = fireGun.playerInfo;
@@ -358,6 +373,7 @@ export class MinigameBeamGun extends IGameScene {
     }
 
     private teleportReceived(teleport: MinigameBeamGunTeleport): void {
+        AudioController.playAudio("teleport");
         for (let i: number = 0; i < this.playersLocally.length; i++) {
             if (teleport.playerToGun.player.id === this.playersLocally[i].player.id) {
                 this.playersLocally[i] = teleport.playerToGun;
@@ -374,6 +390,10 @@ export class MinigameBeamGun extends IGameScene {
         this.playersLocally = [];
         for (let i: number = 0; i < update.players.length; i++) {
             this.playersLocally.push(update.players[i]);
+        }
+
+        if (update.reason === "DiedToSpikes") {
+            AudioController.playAudio("death");
         }
     }
 
