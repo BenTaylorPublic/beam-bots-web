@@ -98,7 +98,7 @@ export class MinigameBeamGun extends IGameScene {
 
         AudioController.loadAudio([{
             name: "death",
-            url: "death_stand.wav"
+            url: "death_sound.wav"
         }, {
             name: "firing",
             url: "beam_gun_firing.wav"
@@ -392,7 +392,7 @@ export class MinigameBeamGun extends IGameScene {
             this.playersLocally.push(update.players[i]);
         }
 
-        if (update.reason === "DiedToSpikes") {
+        if (update.reason === "DiedToSpikes" || update.reason === "DiedToBeam") {
             AudioController.playAudio("death");
         }
     }
