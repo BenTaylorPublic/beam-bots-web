@@ -259,12 +259,11 @@ export class MinigameBeamGun extends IGameScene {
             this.context.beginPath();
             this.context.moveToPoint(this.teleportFrom);
             this.context.lineToPoint(toMiddle);
-            const TELEPORT_WIDTH: number = 100;
-            this.context.lineWidth = TELEPORT_WIDTH;
+            this.context.lineWidth = ConstantsWeb.MG_BEAMGUN_TELEPORT_WIDTH;
             this.context.stroke();
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInGun.player.color, 2);
-            this.context.circle(toMiddle, TELEPORT_WIDTH);
-            this.context.circle(this.teleportFrom, TELEPORT_WIDTH);
+            this.context.circle(toMiddle, ConstantsWeb.MG_BEAMGUN_TELEPORT_CIRCLE_RADIUS);
+            this.context.circle(this.teleportFrom, ConstantsWeb.MG_BEAMGUN_TELEPORT_CIRCLE_RADIUS);
         }
 
         //Drawing the players
@@ -407,10 +406,9 @@ export class MinigameBeamGun extends IGameScene {
                 this.playersLocally[i] = teleport.playerToGround;
             }
         }
-        const TELEPORT_DURATION: number = 10_000;
         setTimeout(() => {
             this.teleportFrom = null;
-        }, TELEPORT_DURATION);
+        }, ConstantsWeb.MG_BEAMGUN_TELEPORT_DURATION);
     }
 
     private updateReceived(update: MinigameBeamGunUpdate): void {

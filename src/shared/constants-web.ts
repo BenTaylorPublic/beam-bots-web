@@ -49,6 +49,9 @@ export class ConstantsWeb {
     public static MG_ICECIRCLE_DRAW_ELLIPSE: boolean = false;
     public static MG_ICECIRCLE_ANIMATION_MS: number = 100;
     public static MG_BEAMGUN_TRY_JUMP_FOR_MS: number = 200;
+    public static MG_BEAMGUN_TELEPORT_WIDTH: number = 100;
+    public static MG_BEAMGUN_TELEPORT_CIRCLE_RADIUS: number = 100;
+    public static MG_BEAMGUN_TELEPORT_DURATION: number = 500;
 
     public static LOBBY_NAME_FONT_SIZE: number = 130;
     public static LOBBY_TIP_HEADING_FONT_SIZE: number = 50;
