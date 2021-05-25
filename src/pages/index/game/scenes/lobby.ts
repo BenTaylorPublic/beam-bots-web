@@ -89,6 +89,14 @@ export class Lobby extends IGameScene {
             this.context.fillText(player.name, textStartX, y);
         }
 
+        //Testing square
+        this.context.beginPath();
+        this.context.strokeRect(1280, 300, 320, 180);
+        this.context.fillStyle = "transparent";
+        this.context.lineWidth = 10;
+        this.context.strokeStyle = "white";
+        this.context.stroke();
+
         //Tips box
         const tipsBoxWidth: number = Sconstants.GAME_LOGIC_WIDTH / 2 - 100;
         const tipsBoxX: number = Sconstants.GAME_LOGIC_WIDTH / 2;

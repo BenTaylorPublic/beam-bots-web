@@ -10,10 +10,11 @@ import {AudioController} from "../audio-controller";
 import {Player} from "../../../../beam-bots-shared/interfaces";
 import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
+import {OverlayWrapper} from "../overlay-wrapper";
 
 export abstract class IGameScene {
     public context: CanvasContextWrapper;
-    protected overlay: HTMLDivElement;
+    protected overlay: OverlayWrapper;
     protected background: HTMLDivElement;
     protected stopLoop: boolean;
     private lastLoopTime: number;
@@ -22,11 +23,12 @@ export abstract class IGameScene {
     constructor() {
         this.stopLoop = false;
         this.background = document.getElementById("background") as HTMLDivElement;
-        this.overlay = document.getElementById("overlay") as HTMLDivElement;
         this.lastLoopTime = Date.now();
         const canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = new CanvasContextWrapper(canvas);
         this.context.updateScaling();
+        const overlay: HTMLDivElement = document.getElementById("overlay") as HTMLDivElement;
+        this.overlay = new OverlayWrapper(overlay);
     }
 
     public async startLoop(): Promise<void> {
@@ -48,7 +50,7 @@ export abstract class IGameScene {
         KeybindsController.removeAllCallbacks();
         AudioController.removeAllAudio();
         this.background.style.backgroundImage = "";
-        this.overlay.innerHTML = "";
+        this.overlay.clear();
         this.context.clear();
         this.context.textAlign = "start";
         this.stopLoop = true;
