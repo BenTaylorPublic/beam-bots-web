@@ -53,12 +53,14 @@ export class MinigameBeamGun extends IGameScene {
     private gunBeamWidth: number;
     private gunBeamInnerWidth: number;
     private gunBeamBottom: number;
+    private teleportFrom: Point2D | null;
 
     constructor(setMinigameBeamGunScene: SetMinigameBeamGunScene) {
         super();
         this.lastUpdate = Date.now();
         this.tryJumpUntil = null;
         this.gunBeamBottom = 0;
+        this.teleportFrom = null;
         this.gunReady = false;
         this.gunShooting = "not shooting";
         this.startTime = this.lastUpdate + Sconstants.MG_COUNTDOWN_DELAY;
@@ -185,47 +187,43 @@ export class MinigameBeamGun extends IGameScene {
         }
 
         const notDeadPlayers: MgBeamGunPlayerInfo[] = [];
+        let playerInGun: MgBeamGunPlayerInfo | null = null;
         for (let i: number = 0; i < this.playersLocally.length; i++) {
             const playerInfo: MgBeamGunPlayerInfo = this.playersLocally[i];
             if (playerInfo.status === "dead") {
                 continue;
             }
             notDeadPlayers.push(playerInfo);
+            if (playerInfo.inGun) {
+                playerInGun = playerInfo;
+            }
         }
 
         //Drawing the beam
-        if (this.gunShooting !== "not shooting") {
-            let playerInGun: MgBeamGunPlayerInfo | null = null;
-            for (let i: number = 0; i < notDeadPlayers.length; i++) {
-                if (notDeadPlayers[i].inGun) {
-                    playerInGun = notDeadPlayers[i];
-                    break;
-                }
+        if (this.gunShooting !== "not shooting" &&
+            playerInGun != null) {
+            let color: string = HelperWebFunctions.convertColorToHexcode(playerInGun.player.color, 3);
+            if (this.gunShooting === "charging") {
+                color += "88";
             }
-            if (playerInGun != null) {
-                let color: string = HelperWebFunctions.convertColorToHexcode(playerInGun.player.color, 3);
-                if (this.gunShooting === "charging") {
-                    color += "88";
-                }
-                this.context.fillStyle = color;
-                const beamTopLeft: Point2D = {
-                    x: playerInGun.location.x + (this.playerSize / 2) - (this.gunBeamWidth / 2),
-                    y: 0
-                };
-                this.context.fillRectWithPoint(beamTopLeft, this.gunBeamWidth, this.gunBeamBottom);
+            this.context.fillStyle = color;
+            const beamTopLeft: Point2D = {
+                x: playerInGun.location.x + (this.playerSize / 2) - (this.gunBeamWidth / 2),
+                y: 0
+            };
+            this.context.fillRectWithPoint(beamTopLeft, this.gunBeamWidth, this.gunBeamBottom);
 
-                //Draw inner
-                color = HelperWebFunctions.convertColorToHexcode(playerInGun.player.color, 4);
-                if (this.gunShooting === "charging") {
-                    color += "88";
-                }
-                this.context.fillStyle = color;
-                const beamTopLeftInner: Point2D = {
-                    x: playerInGun.location.x + (this.playerSize / 2) - (this.gunBeamInnerWidth / 2),
-                    y: 0
-                };
-                this.context.fillRectWithPoint(beamTopLeftInner, this.gunBeamInnerWidth, this.gunBeamBottom);
+            //Draw inner
+            color = HelperWebFunctions.convertColorToHexcode(playerInGun.player.color, 4);
+            if (this.gunShooting === "charging") {
+                color += "88";
             }
+            this.context.fillStyle = color;
+            const beamTopLeftInner: Point2D = {
+                x: playerInGun.location.x + (this.playerSize / 2) - (this.gunBeamInnerWidth / 2),
+                y: 0
+            };
+            this.context.fillRectWithPoint(beamTopLeftInner, this.gunBeamInnerWidth, this.gunBeamBottom);
         }
 
         if (this.boxImage != null) {
@@ -249,11 +247,33 @@ export class MinigameBeamGun extends IGameScene {
                 !canGunnerMove);
         }
 
+        //Drawing the teleporting
+        if (this.teleportFrom != null &&
+            playerInGun != null) {
+            const toMiddle: Point2D = HelperSharedFunctions.addPoints(playerInGun.location, {
+                x: this.playerSize / 2,
+                y: this.playerSize / 2
+            });
+
+            this.context.strokeStyle = HelperWebFunctions.convertColorToHexcode(playerInGun.player.color, 2);
+            this.context.beginPath();
+            this.context.moveToPoint(this.teleportFrom);
+            this.context.lineToPoint(toMiddle);
+            const TELEPORT_WIDTH: number = 100;
+            this.context.lineWidth = TELEPORT_WIDTH;
+            this.context.stroke();
+            this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInGun.player.color, 2);
+            this.context.circle(toMiddle, TELEPORT_WIDTH);
+            this.context.circle(this.teleportFrom, TELEPORT_WIDTH);
+        }
+
         //Drawing the players
         for (let i: number = 0; i < notDeadPlayers.length; i++) {
             const playerInfo: MgBeamGunPlayerInfo = notDeadPlayers[i];
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInfo.player.color);
             this.context.fillRectWithPoint(playerInfo.location, this.playerSize, this.playerSize);
+
+            //Drawing a little indicator under the player to show the gun is ready
             if (playerInfo.inGun &&
                 this.gunReady) {
                 const topLeft: Point2D = {
@@ -376,6 +396,10 @@ export class MinigameBeamGun extends IGameScene {
         AudioController.playAudio("teleport");
         for (let i: number = 0; i < this.playersLocally.length; i++) {
             if (teleport.playerToGun.player.id === this.playersLocally[i].player.id) {
+                this.teleportFrom = HelperSharedFunctions.addPoints(this.playersLocally[i].location, {
+                    x: this.playerSize / 2,
+                    y: this.playerSize / 2
+                });
                 this.playersLocally[i] = teleport.playerToGun;
             }
             if (teleport.playerToGround != null &&
@@ -383,6 +407,10 @@ export class MinigameBeamGun extends IGameScene {
                 this.playersLocally[i] = teleport.playerToGround;
             }
         }
+        const TELEPORT_DURATION: number = 10_000;
+        setTimeout(() => {
+            this.teleportFrom = null;
+        }, TELEPORT_DURATION);
     }
 
     private updateReceived(update: MinigameBeamGunUpdate): void {

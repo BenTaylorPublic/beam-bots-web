@@ -228,9 +228,7 @@ export class MinigameIceCircle extends IGameScene {
                 HelperSharedFunctions.mgIceCircleCalculateNewPosition(playerInfo, ms);
             }
             this.context.fillStyle = HelperWebFunctions.convertColorToHexcode(playerInfo.player.color);
-            this.context.beginPath();
-            this.context.arc(playerInfo.location.x, playerInfo.location.y, this.localPlayerRadius, 0, 2 * Math.PI);
-            this.context.fill();
+            this.context.circle(playerInfo.location, this.localPlayerRadius);
 
             if (this.spriteSheets[playerInfo.player.color] != null) {
                 const locationToDraw: Point2D = HelperSharedFunctions.subtract(playerInfo.location, {

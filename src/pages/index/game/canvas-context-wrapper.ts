@@ -82,6 +82,22 @@ export class CanvasContextWrapper {
         this.context.beginPath();
     }
 
+    public moveTo(x: number, y: number): void {
+        this.context.moveTo(x, y);
+    }
+
+    public moveToPoint(point: Point2D): void {
+        this.context.moveTo(point.x, point.y);
+    }
+
+    public lineTo(x: number, y: number): void {
+        this.context.lineTo(x, y);
+    }
+
+    public lineToPoint(point: Point2D): void {
+        this.context.lineTo(point.x, point.y);
+    }
+
     public stroke(): void {
         this.context.stroke();
     }
@@ -92,6 +108,12 @@ export class CanvasContextWrapper {
 
     public arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean): void {
         this.context.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+    }
+
+    public circle(point: Point2D, radius: number): void {
+        this.context.beginPath();
+        this.context.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+        this.context.fill();
     }
 
     public ellipse(x: number, y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number, anticlockwise?: boolean): void {
