@@ -1,6 +1,9 @@
 export class ConstantsWeb {
     public static VERSION: string = "0.1.3";
+
+    //Debugging
     public static USE_HTTPS_SERVER: boolean = true;
+    public static DEBUG_OVERLAY_HITBOX_TEST: boolean = true;
 
     //Run settings
     public static TICK_DELAY: number = 10;

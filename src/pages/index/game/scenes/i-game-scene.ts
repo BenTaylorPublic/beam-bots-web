@@ -14,7 +14,7 @@ import {OverlayWrapper} from "../overlay-wrapper";
 
 export abstract class IGameScene {
     public context: CanvasContextWrapper;
-    protected overlay: OverlayWrapper;
+    public overlay: OverlayWrapper;
     protected background: HTMLDivElement;
     protected stopLoop: boolean;
     private lastLoopTime: number;

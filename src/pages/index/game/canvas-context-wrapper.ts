@@ -4,6 +4,8 @@ import {Point2D} from "../../../beam-bots-shared/interfaces";
 import {AnimatedSpriteSheet} from "./animated-sprite-sheet";
 
 export class CanvasContextWrapper {
+    public static width: number;
+    public static height: number;
     private context: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
 
@@ -14,9 +16,16 @@ export class CanvasContextWrapper {
         this.updateScaling();
     }
 
+    public static initialize(width: number, height: number): void {
+        CanvasContextWrapper.width = width;
+        CanvasContextWrapper.height = height;
+    }
+
     public updateScaling(): void {
         this.context.setTransform(1, 0, 0, 1, 0, 0);
         this.context.scale(this.canvas.height / Sconstants.GAME_LOGIC_HEIGHT, this.canvas.height / Sconstants.GAME_LOGIC_HEIGHT);
+        CanvasContextWrapper.width = this.canvas.width;
+        CanvasContextWrapper.height = this.canvas.height;
     }
 
     public clear(): void {

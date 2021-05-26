@@ -9,7 +9,8 @@ import {LobbyStartButtonClicked} from "../../../../beam-bots-shared/communicatio
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
 import {ConstantsWeb} from "../../../../shared/constants-web";
-import {Player} from "../../../../beam-bots-shared/interfaces";
+import {Player, Rectangle} from "../../../../beam-bots-shared/interfaces";
+import {HelperSharedFunctions} from "../../../../beam-bots-shared/helper-shared-functions";
 
 export class Lobby extends IGameScene {
     public name: GameScenes = "Lobby";
@@ -142,6 +143,9 @@ export class Lobby extends IGameScene {
         startButton.style.margin = "auto";
         startButton.onclick = this.startButtonClicked.bind(this);
         this.overlay.appendChild(startButton);
+
+        const rect: Rectangle = HelperSharedFunctions.convertPointToRectangle({x: 1280, y: 300}, 320, 180);
+        this.overlay.addClickableRectangle(rect);
     }
 
     private startButtonClicked(): void {
