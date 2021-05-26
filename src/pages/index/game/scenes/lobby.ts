@@ -128,13 +128,12 @@ export class Lobby extends IGameScene {
         if (this.minigameList.length === ConstantsWeb.LOBBY_AMOUNT_OF_MINIGAMES) {
             let x: number = ConstantsWeb.LOBBY_ICONS_START_X;
 
-            for (const minigameImage of this.minigameList) {
-                this.context.drawImage(minigameImage.image, x, ConstantsWeb.LOBBY_ICONS_START_Y, ConstantsWeb.LOBBY_ICONS_WIDTH, ConstantsWeb.LOBBY_ICONS_HEIGHT);
+            for (const minigame of this.minigameList) {
+                this.context.drawImage(minigame.image, x, ConstantsWeb.LOBBY_ICONS_START_Y, ConstantsWeb.LOBBY_ICONS_WIDTH, ConstantsWeb.LOBBY_ICONS_HEIGHT);
 
                 //This will be an outline
-                //TODO: Set to green when selected
                 this.context.beginPath();
-                this.context.strokeStyle = "#444444";
+                this.context.strokeStyle = minigame.selected ? "#22EE22" : "#444444";
                 this.context.strokeRect(x, ConstantsWeb.LOBBY_ICONS_START_Y, ConstantsWeb.LOBBY_ICONS_WIDTH, ConstantsWeb.LOBBY_ICONS_HEIGHT);
                 this.context.fillStyle = "transparent";
                 this.context.lineWidth = 10;
