@@ -10,6 +10,7 @@ import {
 import {SetMinigameIceCircleScene} from "../../../beam-bots-shared/communication-objects/server-to-client/minigame-ice-circle/set-minigame-ice-circle-scene";
 import {MinigameBeamGun} from "./scenes/minigame-beam-gun";
 import {SetMinigameBeamGunScene} from "../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/set-minigame-beam-gun-scene";
+import {SetLobbyScene} from "../../../beam-bots-shared/communication-objects/server-to-client/set-lobby-scene";
 
 export class SceneController {
     private static scene: IGameScene | null;
@@ -36,7 +37,7 @@ export class SceneController {
                 this.setScene("MinigameBeamGun", communicationTypeAndObject.object);
                 return;
             case "SetLobbyScene":
-                this.setScene("Lobby");
+                this.setScene("Lobby", communicationTypeAndObject.object);
                 return;
         }
 
@@ -52,7 +53,7 @@ export class SceneController {
 
         switch (scene) {
             case "Lobby":
-                this.scene = new Lobby();
+                this.scene = new Lobby(object as SetLobbyScene);
                 break;
             case "MinigameIceCircle":
                 this.scene = new MinigameIceCircle(object as SetMinigameIceCircleScene);

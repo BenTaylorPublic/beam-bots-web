@@ -12,6 +12,10 @@ import {ConstantsWeb} from "../../../../shared/constants-web";
 import {Player, Rectangle} from "../../../../beam-bots-shared/interfaces";
 import {HelperSharedFunctions} from "../../../../beam-bots-shared/helper-shared-functions";
 import {LobbyMinigame} from "../../../../shared/interfaces";
+import {SetLobbyScene} from "../../../../beam-bots-shared/communication-objects/server-to-client/set-lobby-scene";
+import {LobbyMinigameClicked} from "../../../../beam-bots-shared/communication-objects/client-to-server/lobby/lobby-minigame-clicked";
+import {MinigameBeamGunUpdate} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-update";
+import {LobbySelectedMinigameUpdate} from "../../../../beam-bots-shared/communication-objects/server-to-client/lobby/lobby-selected-minigame-update";
 
 export class Lobby extends IGameScene {
     public name: GameScenes = "Lobby";
@@ -21,7 +25,7 @@ export class Lobby extends IGameScene {
     private minigameList: LobbyMinigame[];
     private selectedMinigame: GameScenes | null;
 
-    constructor() {
+    constructor(setLobbyScene: SetLobbyScene) {
         super();
         this.background.style.backgroundColor = "black";
         this.setupOverlay();
@@ -29,7 +33,7 @@ export class Lobby extends IGameScene {
         this.escapeMenuTip = null;
         this.crown = null;
         this.minigameList = [];
-        this.selectedMinigame = null;
+        this.selectedMinigame = setLobbyScene.minigameSelected;
 
         const logoAsImage: HTMLImageElement = new Image();
         logoAsImage.onload = () => {
@@ -80,6 +84,9 @@ export class Lobby extends IGameScene {
         type: CommunicationObjectTypesServerToClient,
         communicationTypeAndObject: CommunicationTypeAndObject): void {
         switch (type) {
+            case "LobbySelectedMinigameUpdate":
+                this.minigameSelected(communicationTypeAndObject.object as LobbySelectedMinigameUpdate);
+                break;
             default:
                 this.failedToHandleCommunication(communicationTypeAndObject);
                 break;
@@ -190,6 +197,13 @@ export class Lobby extends IGameScene {
         PlayerState.sendCommunication<LobbyStartButtonClicked>("LobbyStartButtonClicked", lobbyStartButtonClicked);
     }
 
+    private minigameSelected(minigameSelected: LobbySelectedMinigameUpdate): void {
+        this.selectedMinigame = minigameSelected.minigame;
+        for (const minigame of this.minigameList) {
+            minigame.selected = minigame.minigame === minigameSelected.minigame;
+        }
+    }
+
     private minigameImageLoaded(minigameInfo: LobbyMinigame): void {
         this.minigameList.push(minigameInfo);
         if (this.minigameList.length === ConstantsWeb.LOBBY_AMOUNT_OF_MINIGAMES) {
@@ -203,7 +217,10 @@ export class Lobby extends IGameScene {
                     y: ConstantsWeb.LOBBY_ICONS_START_Y
                 }, ConstantsWeb.LOBBY_ICONS_WIDTH, ConstantsWeb.LOBBY_ICONS_HEIGHT);
                 this.overlay.addClickableRectangle(rect, () => {
-                    console.log("HI");
+                    const lobbyMinigameClicked: LobbyMinigameClicked = {
+                        minigame: minigame.minigame
+                    };
+                    PlayerState.sendCommunication<LobbyMinigameClicked>("LobbyMinigameClicked", lobbyMinigameClicked);
                 });
                 x += ConstantsWeb.LOBBY_ICONS_WIDTH + ConstantsWeb.LOBBY_ICONS_GAP;
             }
