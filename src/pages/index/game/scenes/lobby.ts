@@ -167,16 +167,25 @@ export class Lobby extends IGameScene {
         this.context.textAlign = "center";
         this.context.fillText("Tip", tipsHeadingX + (tipsHeadingTextWidth / 2), tipsBoxY + 10, tipsHeadingTextWidth);
 
-        if (this.escapeMenuTip != null) {
-            this.context.drawImage(this.escapeMenuTip, tipsBoxX + 20, tipsBoxY + 20, this.escapeMenuTip.width, this.escapeMenuTip.height);
-        }
 
         this.context.fillStyle = "white";
         this.context.textAlign = "center";
-        this.context.fillText("Press this for", tipsHeadingX + (tipsHeadingTextWidth / 2) + 300, tipsBoxY + 200);
-        this.context.fillText("a settings menu", tipsHeadingX + (tipsHeadingTextWidth / 2) + 300, tipsBoxY + 300);
 
-
+        switch (this.selectedMinigame) {
+            case null:
+                if (this.escapeMenuTip != null) {
+                    this.context.drawImage(this.escapeMenuTip, tipsBoxX + 20, tipsBoxY + 20, this.escapeMenuTip.width, this.escapeMenuTip.height);
+                }
+                this.context.fillText("Press this for", tipsHeadingX + (tipsHeadingTextWidth / 2) + 300, tipsBoxY + 200);
+                this.context.fillText("a settings menu", tipsHeadingX + (tipsHeadingTextWidth / 2) + 300, tipsBoxY + 300);
+                break;
+            case "MinigameIceCircle":
+                this.context.fillText("Controls: WASD", tipsHeadingX + (tipsHeadingTextWidth / 2), tipsBoxY + 200);
+                break;
+            case "MinigameBeamGun":
+                this.context.fillText("Controls: A, D, and SPACE", tipsHeadingX + (tipsHeadingTextWidth / 2), tipsBoxY + 200);
+                break;
+        }
     }
 
     private setupOverlay(): void {
