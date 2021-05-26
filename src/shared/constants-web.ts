@@ -3,7 +3,7 @@ export class ConstantsWeb {
 
     //Debugging
     public static USE_HTTPS_SERVER: boolean = true;
-    public static DEBUG_OVERLAY_HITBOX_TEST: boolean = true;
+    public static DEBUG_OVERLAY_HITBOX_TEST: boolean = false;
 
     //Run settings
     public static TICK_DELAY: number = 10;
@@ -58,4 +58,10 @@ export class ConstantsWeb {
 
     public static LOBBY_NAME_FONT_SIZE: number = 130;
     public static LOBBY_TIP_HEADING_FONT_SIZE: number = 50;
+    public static LOBBY_ICONS_START_X: number = 1280;
+    public static LOBBY_ICONS_START_Y: number = 300;
+    public static LOBBY_ICONS_WIDTH: number = 320;
+    public static LOBBY_ICONS_HEIGHT: number = 180;
+    public static LOBBY_ICONS_GAP: number = 20;
+    public static LOBBY_AMOUNT_OF_MINIGAMES: number = 2;
 }

@@ -2,6 +2,7 @@ import {Rectangle} from "../../../beam-bots-shared/interfaces";
 import {Sconstants} from "../../../beam-bots-shared/sconstants";
 import {CanvasContextWrapper} from "./canvas-context-wrapper";
 import {ConstantsWeb} from "../../../shared/constants-web";
+import {VoidCallback} from "../../../shared/types";
 
 export class OverlayWrapper {
     private overlay: HTMLDivElement;
@@ -19,16 +20,18 @@ export class OverlayWrapper {
         this.overlay.appendChild(element);
     }
 
-    public addClickableRectangle(rect: Rectangle): void {
+    public addClickableRectangle(rect: Rectangle, clickCallback: VoidCallback): void {
         const newDiv: HTMLDivElement = document.createElement("div");
         newDiv.style.position = "absolute";
         newDiv.style.top = rect.topLeft.y.toString() + "px";
         newDiv.style.left = rect.topLeft.x.toString() + "px";
         newDiv.style.width = (rect.topRight.x - rect.topLeft.x).toString() + "px";
         newDiv.style.height = (rect.bottomLeft.y - rect.topLeft.y).toString() + "px";
+        newDiv.style.cursor = "pointer";
         if (ConstantsWeb.DEBUG_OVERLAY_HITBOX_TEST) {
             newDiv.style.backgroundColor = "red";
         }
+        newDiv.onclick = clickCallback;
         this.overlay.appendChild(newDiv);
     }
 
