@@ -10,7 +10,6 @@ import {KeyboardEventKeyState} from "../../shared/types";
 import {Sconstants} from "../../beam-bots-shared/sconstants";
 import {SceneController} from "./game/scene-controller";
 import DisconnectReason = Socket.DisconnectReason;
-import {CanvasContextWrapper} from "./game/canvas-context-wrapper";
 
 export class IndexView {
     public static pingDiv: HTMLDivElement;
@@ -192,7 +191,7 @@ export class IndexView {
         if (canvas.width === canvasWidth &&
             canvas.height === canvasHeight) {
             //Don't bother
-            SceneController.updateScaling(true);
+            SceneController.updateScaling();
             return;
         }
 
@@ -213,7 +212,7 @@ export class IndexView {
         escapeMenu.style.height = `${canvas.height}px`;
         escapeMenu.style.width = `${canvas.width}px`;
 
-        SceneController.updateScaling(false);
+        SceneController.updateScaling();
     }
 }
 

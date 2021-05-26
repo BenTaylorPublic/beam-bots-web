@@ -18,14 +18,10 @@ export class SceneController {
         this.scene = null;
     }
 
-    public static updateScaling(justDoOverlay: boolean): void {
+    public static updateScaling(): void {
         if (this.scene != null) {
-            if (justDoOverlay) {
-                this.scene.overlay.updateScaling();
-            } else {
-                this.scene.context.updateScaling();
-                this.scene.overlay.updateScaling();
-            }
+            this.scene.context.updateScaling();
+            this.scene.overlay.updateScaling();
         }
     }
 
