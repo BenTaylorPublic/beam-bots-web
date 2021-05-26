@@ -45,8 +45,8 @@ export class Lobby extends IGameScene {
 
         const escapeMenuTipAsImage: HTMLImageElement = new Image();
         escapeMenuTipAsImage.onload = () => {
-            escapeMenuTipAsImage.width = escapeMenuTipAsImage.width / 1.5;
-            escapeMenuTipAsImage.height = escapeMenuTipAsImage.height / 1.5;
+            escapeMenuTipAsImage.width = escapeMenuTipAsImage.width / 2;
+            escapeMenuTipAsImage.height = escapeMenuTipAsImage.height / 2;
             this.escapeMenuTip = escapeMenuTipAsImage;
         };
         escapeMenuTipAsImage.src = "/beam-bots/assets/images/lobby_escape_menu_tip.png";
@@ -150,7 +150,7 @@ export class Lobby extends IGameScene {
         const tipsBoxY: number = 800;
         this.context.beginPath();
         this.context.strokeStyle = "white";
-        this.context.strokeRect(tipsBoxX, tipsBoxY, tipsBoxWidth, 500);
+        this.context.strokeRect(tipsBoxX, tipsBoxY, tipsBoxWidth, 400);
         this.context.fillStyle = "transparent";
         this.context.lineWidth = 10;
         this.context.stroke();
@@ -186,23 +186,38 @@ export class Lobby extends IGameScene {
                 this.context.fillText("Controls: A, D, and SPACE", tipsHeadingX + (tipsHeadingTextWidth / 2), tipsBoxY + 200);
                 break;
         }
+
+        //Start button
+        if (this.selectedMinigame != null) {
+            this.context.beginPath();
+            this.context.strokeStyle = "#22EE22";
+            this.context.strokeRect(
+                ConstantsWeb.LOBBY_START_BUTTON_X,
+                ConstantsWeb.LOBBY_START_BUTTON_Y,
+                ConstantsWeb.LOBBY_START_BUTTON_WIDTH,
+                ConstantsWeb.LOBBY_START_BUTTON_HEIGHT);
+            this.context.lineWidth = 10;
+            this.context.stroke();
+
+            this.context.fillStyle = "white";
+            this.context.fillText("Start",
+                ConstantsWeb.LOBBY_START_BUTTON_X + (ConstantsWeb.LOBBY_START_BUTTON_WIDTH / 2),
+                ConstantsWeb.LOBBY_START_BUTTON_Y + 65);
+        }
     }
 
     private setupOverlay(): void {
-        const startButton: HTMLButtonElement = document.createElement("button");
-        startButton.innerText = "Start";
-        startButton.style.position = "absolute";
-        startButton.style.bottom = "10px";
-        startButton.style.right = "0";
-        startButton.style.left = "0";
-        startButton.style.margin = "auto";
-        startButton.onclick = this.startButtonClicked.bind(this);
-        this.overlay.appendChild(startButton);
-    }
-
-    private startButtonClicked(): void {
-        const lobbyStartButtonClicked: LobbyStartButtonClicked = {};
-        PlayerState.sendCommunication<LobbyStartButtonClicked>("LobbyStartButtonClicked", lobbyStartButtonClicked);
+        const rect: Rectangle = HelperSharedFunctions.convertPointToRectangle(
+            {
+                x: ConstantsWeb.LOBBY_START_BUTTON_X,
+                y: ConstantsWeb.LOBBY_START_BUTTON_Y
+            },
+            ConstantsWeb.LOBBY_START_BUTTON_WIDTH,
+            ConstantsWeb.LOBBY_START_BUTTON_HEIGHT);
+        this.overlay.addClickableRectangle(rect, () => {
+            const lobbyStartButtonClicked: LobbyStartButtonClicked = {};
+            PlayerState.sendCommunication<LobbyStartButtonClicked>("LobbyStartButtonClicked", lobbyStartButtonClicked);
+        });
     }
 
     private minigameSelected(minigameSelected: LobbySelectedMinigameUpdate): void {

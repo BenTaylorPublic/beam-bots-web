@@ -64,4 +64,8 @@ export class ConstantsWeb {
     public static LOBBY_ICONS_HEIGHT: number = 180;
     public static LOBBY_ICONS_GAP: number = 20;
     public static LOBBY_AMOUNT_OF_MINIGAMES: number = 2;
+    public static LOBBY_START_BUTTON_X: number = 1180;
+    public static LOBBY_START_BUTTON_Y: number = 1290;
+    public static LOBBY_START_BUTTON_WIDTH: number = 200;
+    public static LOBBY_START_BUTTON_HEIGHT: number = 100;
 }

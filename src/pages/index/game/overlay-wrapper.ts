@@ -16,10 +16,6 @@ export class OverlayWrapper {
         this.overlay.innerHTML = "";
     }
 
-    public appendChild(element: HTMLElement): void {
-        this.overlay.appendChild(element);
-    }
-
     public addClickableRectangle(rect: Rectangle, clickCallback: VoidCallback): void {
         const newDiv: HTMLDivElement = document.createElement("div");
         newDiv.style.position = "absolute";
