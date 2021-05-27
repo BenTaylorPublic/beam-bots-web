@@ -1,13 +1,16 @@
 import {GameScenes} from "../../../beam-bots-shared/types";
 import {Lobby} from "./scenes/lobby";
 import {ErrorService} from "../../../shared/services/error-service";
-import {IGameScene} from "./i-game-scene";
+import {IGameScene} from "./scenes/i-game-scene";
 import {MinigameIceCircle} from "./scenes/minigame-ice-circle";
 import {
     CommunicationObjectTypesServerToClient,
     CommunicationTypeAndObject
 } from "../../../beam-bots-shared/communication-objects/communication-object";
 import {SetMinigameIceCircleScene} from "../../../beam-bots-shared/communication-objects/server-to-client/minigame-ice-circle/set-minigame-ice-circle-scene";
+import {MinigameBeamGun} from "./scenes/minigame-beam-gun";
+import {SetMinigameBeamGunScene} from "../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/set-minigame-beam-gun-scene";
+import {SetLobbyScene} from "../../../beam-bots-shared/communication-objects/server-to-client/set-lobby-scene";
 
 export class SceneController {
     private static scene: IGameScene | null;
@@ -19,6 +22,7 @@ export class SceneController {
     public static updateScaling(): void {
         if (this.scene != null) {
             this.scene.context.updateScaling();
+            this.scene.overlay.updateScaling();
         }
     }
 
@@ -29,8 +33,11 @@ export class SceneController {
             case "SetMinigameIceCircleScene":
                 this.setScene("MinigameIceCircle", communicationTypeAndObject.object);
                 return;
+            case "SetMinigameBeamGunScene":
+                this.setScene("MinigameBeamGun", communicationTypeAndObject.object);
+                return;
             case "SetLobbyScene":
-                this.setScene("Lobby");
+                this.setScene("Lobby", communicationTypeAndObject.object);
                 return;
         }
 
@@ -46,10 +53,13 @@ export class SceneController {
 
         switch (scene) {
             case "Lobby":
-                this.scene = new Lobby();
+                this.scene = new Lobby(object as SetLobbyScene);
                 break;
             case "MinigameIceCircle":
                 this.scene = new MinigameIceCircle(object as SetMinigameIceCircleScene);
+                break;
+            case "MinigameBeamGun":
+                this.scene = new MinigameBeamGun(object as SetMinigameBeamGunScene);
                 break;
             default:
                 throw ErrorService.error(1010, `Unknown scene '${scene}'`);

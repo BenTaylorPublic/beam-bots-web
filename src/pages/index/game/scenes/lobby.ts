@@ -1,4 +1,4 @@
-import {IGameScene} from "../i-game-scene";
+import {IGameScene} from "./i-game-scene";
 import {GameScenes} from "../../../../beam-bots-shared/types";
 import {
     CommunicationObjectTypesServerToClient,
@@ -9,21 +9,31 @@ import {LobbyStartButtonClicked} from "../../../../beam-bots-shared/communicatio
 import {Sconstants} from "../../../../beam-bots-shared/sconstants";
 import {HelperWebFunctions} from "../../../../shared/helper-web-functions";
 import {ConstantsWeb} from "../../../../shared/constants-web";
-import {Player} from "../../../../beam-bots-shared/interfaces";
+import {Player, Rectangle} from "../../../../beam-bots-shared/interfaces";
+import {HelperSharedFunctions} from "../../../../beam-bots-shared/helper-shared-functions";
+import {LobbyMinigame} from "../../../../shared/interfaces";
+import {SetLobbyScene} from "../../../../beam-bots-shared/communication-objects/server-to-client/set-lobby-scene";
+import {LobbyMinigameClicked} from "../../../../beam-bots-shared/communication-objects/client-to-server/lobby/lobby-minigame-clicked";
+import {MinigameBeamGunUpdate} from "../../../../beam-bots-shared/communication-objects/server-to-client/minigame-beam-gun/minigame-beam-gun-update";
+import {LobbySelectedMinigameUpdate} from "../../../../beam-bots-shared/communication-objects/server-to-client/lobby/lobby-selected-minigame-update";
 
 export class Lobby extends IGameScene {
     public name: GameScenes = "Lobby";
     private logo: HTMLImageElement | null;
     private escapeMenuTip: HTMLImageElement | null;
     private crown: HTMLImageElement | null;
+    private minigameList: LobbyMinigame[];
+    private selectedMinigame: GameScenes | null;
 
-    constructor() {
+    constructor(setLobbyScene: SetLobbyScene) {
         super();
         this.background.style.backgroundColor = "black";
         this.setupOverlay();
         this.logo = null;
         this.escapeMenuTip = null;
         this.crown = null;
+        this.minigameList = [];
+        this.selectedMinigame = setLobbyScene.minigameSelected;
 
         const logoAsImage: HTMLImageElement = new Image();
         logoAsImage.onload = () => {
@@ -35,8 +45,8 @@ export class Lobby extends IGameScene {
 
         const escapeMenuTipAsImage: HTMLImageElement = new Image();
         escapeMenuTipAsImage.onload = () => {
-            escapeMenuTipAsImage.width = escapeMenuTipAsImage.width / 1.5;
-            escapeMenuTipAsImage.height = escapeMenuTipAsImage.height / 1.5;
+            escapeMenuTipAsImage.width = escapeMenuTipAsImage.width / 2;
+            escapeMenuTipAsImage.height = escapeMenuTipAsImage.height / 2;
             this.escapeMenuTip = escapeMenuTipAsImage;
         };
         escapeMenuTipAsImage.src = "/beam-bots/assets/images/lobby_escape_menu_tip.png";
@@ -46,12 +56,37 @@ export class Lobby extends IGameScene {
             this.crown = crownAsImage;
         };
         crownAsImage.src = "/beam-bots/assets/images/lobby_crown.png";
+
+        const minigameIceCirclePicAsImage: HTMLImageElement = new Image();
+        minigameIceCirclePicAsImage.onload = () => {
+            this.minigameImageLoaded({
+                index: 0,
+                image: minigameIceCirclePicAsImage,
+                minigame: "MinigameIceCircle",
+                selected: this.selectedMinigame === "MinigameIceCircle"
+            });
+        };
+        minigameIceCirclePicAsImage.src = "/beam-bots/assets/images/ice_circle_bg.png";
+
+        const minigameBeamGunPicAsImage: HTMLImageElement = new Image();
+        minigameBeamGunPicAsImage.onload = () => {
+            this.minigameImageLoaded({
+                index: 1,
+                image: minigameBeamGunPicAsImage,
+                minigame: "MinigameBeamGun",
+                selected: this.selectedMinigame === "MinigameBeamGun"
+            });
+        };
+        minigameBeamGunPicAsImage.src = "/beam-bots/assets/images/lobby_beam_gun.png";
     }
 
     public handleCommunication(
         type: CommunicationObjectTypesServerToClient,
         communicationTypeAndObject: CommunicationTypeAndObject): void {
         switch (type) {
+            case "LobbySelectedMinigameUpdate":
+                this.minigameSelected(communicationTypeAndObject.object as LobbySelectedMinigameUpdate);
+                break;
             default:
                 this.failedToHandleCommunication(communicationTypeAndObject);
                 break;
@@ -89,15 +124,35 @@ export class Lobby extends IGameScene {
             this.context.fillText(player.name, textStartX, y);
         }
 
+        //MINIGAMES
+        if (this.minigameList.length === ConstantsWeb.LOBBY_AMOUNT_OF_MINIGAMES) {
+            let x: number = ConstantsWeb.LOBBY_ICONS_START_X;
+
+            for (const minigame of this.minigameList) {
+                this.context.drawImage(minigame.image, x, ConstantsWeb.LOBBY_ICONS_START_Y, ConstantsWeb.LOBBY_ICONS_WIDTH, ConstantsWeb.LOBBY_ICONS_HEIGHT);
+
+                //This will be an outline
+                this.context.beginPath();
+                this.context.strokeStyle = minigame.selected ? "#22EE22" : "#444444";
+                this.context.strokeRect(x, ConstantsWeb.LOBBY_ICONS_START_Y, ConstantsWeb.LOBBY_ICONS_WIDTH, ConstantsWeb.LOBBY_ICONS_HEIGHT);
+                this.context.fillStyle = "transparent";
+                this.context.lineWidth = 10;
+                this.context.stroke();
+
+                x += ConstantsWeb.LOBBY_ICONS_WIDTH + ConstantsWeb.LOBBY_ICONS_GAP;
+            }
+
+        }
+
         //Tips box
         const tipsBoxWidth: number = Sconstants.GAME_LOGIC_WIDTH / 2 - 100;
         const tipsBoxX: number = Sconstants.GAME_LOGIC_WIDTH / 2;
         const tipsBoxY: number = 800;
         this.context.beginPath();
-        this.context.strokeRect(tipsBoxX, tipsBoxY, tipsBoxWidth, 500);
+        this.context.strokeStyle = "white";
+        this.context.strokeRect(tipsBoxX, tipsBoxY, tipsBoxWidth, 400);
         this.context.fillStyle = "transparent";
         this.context.lineWidth = 10;
-        this.context.strokeStyle = "white";
         this.context.stroke();
 
         //Clear room for the heading
@@ -112,33 +167,86 @@ export class Lobby extends IGameScene {
         this.context.textAlign = "center";
         this.context.fillText("Tip", tipsHeadingX + (tipsHeadingTextWidth / 2), tipsBoxY + 10, tipsHeadingTextWidth);
 
-        if (this.escapeMenuTip != null) {
-            this.context.drawImage(this.escapeMenuTip, tipsBoxX + 20, tipsBoxY + 20, this.escapeMenuTip.width, this.escapeMenuTip.height);
-        }
 
         this.context.fillStyle = "white";
         this.context.textAlign = "center";
-        this.context.fillText("Press this for", tipsHeadingX + (tipsHeadingTextWidth / 2) + 300, tipsBoxY + 200);
-        this.context.fillText("a settings menu", tipsHeadingX + (tipsHeadingTextWidth / 2) + 300, tipsBoxY + 300);
 
+        switch (this.selectedMinigame) {
+            case null:
+                if (this.escapeMenuTip != null) {
+                    this.context.drawImage(this.escapeMenuTip, tipsBoxX + 20, tipsBoxY + 20, this.escapeMenuTip.width, this.escapeMenuTip.height);
+                }
+                this.context.fillText("Press this for", tipsHeadingX + (tipsHeadingTextWidth / 2) + 300, tipsBoxY + 200);
+                this.context.fillText("a settings menu", tipsHeadingX + (tipsHeadingTextWidth / 2) + 300, tipsBoxY + 300);
+                break;
+            case "MinigameIceCircle":
+                this.context.fillText("Controls: WASD", tipsHeadingX + (tipsHeadingTextWidth / 2), tipsBoxY + 200);
+                break;
+            case "MinigameBeamGun":
+                this.context.fillText("Controls: A, D, and SPACE", tipsHeadingX + (tipsHeadingTextWidth / 2), tipsBoxY + 200);
+                break;
+        }
 
+        //Start button
+        if (this.selectedMinigame != null) {
+            this.context.beginPath();
+            this.context.strokeStyle = "#22EE22";
+            this.context.strokeRect(
+                ConstantsWeb.LOBBY_START_BUTTON_X,
+                ConstantsWeb.LOBBY_START_BUTTON_Y,
+                ConstantsWeb.LOBBY_START_BUTTON_WIDTH,
+                ConstantsWeb.LOBBY_START_BUTTON_HEIGHT);
+            this.context.lineWidth = 10;
+            this.context.stroke();
+
+            this.context.fillStyle = "white";
+            this.context.fillText("Start",
+                ConstantsWeb.LOBBY_START_BUTTON_X + (ConstantsWeb.LOBBY_START_BUTTON_WIDTH / 2),
+                ConstantsWeb.LOBBY_START_BUTTON_Y + 65);
+        }
     }
 
     private setupOverlay(): void {
-        const startButton: HTMLButtonElement = document.createElement("button");
-        startButton.innerText = "Start";
-        startButton.style.position = "absolute";
-        startButton.style.bottom = "10px";
-        startButton.style.right = "0";
-        startButton.style.left = "0";
-        startButton.style.margin = "auto";
-        startButton.onclick = this.startButtonClicked.bind(this);
-        this.overlay.appendChild(startButton);
+        const rect: Rectangle = HelperSharedFunctions.convertPointToRectangle(
+            {
+                x: ConstantsWeb.LOBBY_START_BUTTON_X,
+                y: ConstantsWeb.LOBBY_START_BUTTON_Y
+            },
+            ConstantsWeb.LOBBY_START_BUTTON_WIDTH,
+            ConstantsWeb.LOBBY_START_BUTTON_HEIGHT);
+        this.overlay.addClickableRectangle(rect, () => {
+            const lobbyStartButtonClicked: LobbyStartButtonClicked = {};
+            PlayerState.sendCommunication<LobbyStartButtonClicked>("LobbyStartButtonClicked", lobbyStartButtonClicked);
+        });
     }
 
-    private startButtonClicked(): void {
-        const lobbyStartButtonClicked: LobbyStartButtonClicked = {};
-        PlayerState.sendCommunication<LobbyStartButtonClicked>("LobbyStartButtonClicked", lobbyStartButtonClicked);
+    private minigameSelected(minigameSelected: LobbySelectedMinigameUpdate): void {
+        this.selectedMinigame = minigameSelected.minigame;
+        for (const minigame of this.minigameList) {
+            minigame.selected = minigame.minigame === minigameSelected.minigame;
+        }
     }
 
+    private minigameImageLoaded(minigameInfo: LobbyMinigame): void {
+        this.minigameList.push(minigameInfo);
+        if (this.minigameList.length === ConstantsWeb.LOBBY_AMOUNT_OF_MINIGAMES) {
+            this.minigameList.sort((a, b) => {
+                return a.index - b.index;
+            });
+            let x: number = ConstantsWeb.LOBBY_ICONS_START_X;
+            for (const minigame of this.minigameList) {
+                const rect: Rectangle = HelperSharedFunctions.convertPointToRectangle({
+                    x: x,
+                    y: ConstantsWeb.LOBBY_ICONS_START_Y
+                }, ConstantsWeb.LOBBY_ICONS_WIDTH, ConstantsWeb.LOBBY_ICONS_HEIGHT);
+                this.overlay.addClickableRectangle(rect, () => {
+                    const lobbyMinigameClicked: LobbyMinigameClicked = {
+                        minigame: minigame.minigame
+                    };
+                    PlayerState.sendCommunication<LobbyMinigameClicked>("LobbyMinigameClicked", lobbyMinigameClicked);
+                });
+                x += ConstantsWeb.LOBBY_ICONS_WIDTH + ConstantsWeb.LOBBY_ICONS_GAP;
+            }
+        }
+    }
 }
