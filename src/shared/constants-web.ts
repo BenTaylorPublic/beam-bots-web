@@ -1,5 +1,5 @@
 export class ConstantsWeb {
-    public static VERSION: string = "0.1.3";
+    public static VERSION: string = "0.2.0";
 
     //Debugging
     public static USE_HTTPS_SERVER: boolean = true;
