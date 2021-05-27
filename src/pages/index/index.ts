@@ -191,6 +191,7 @@ export class IndexView {
         if (canvas.width === canvasWidth &&
             canvas.height === canvasHeight) {
             //Don't bother
+            SceneController.updateScaling();
             return;
         }
 
@@ -200,8 +201,8 @@ export class IndexView {
         canvas.style.width = `${canvas.width}px`;
 
         const overlay: HTMLDivElement = document.getElementById("overlay") as HTMLDivElement;
-        overlay.style.height = `${canvas.height}px`;
-        overlay.style.width = `${canvas.width}px`;
+        overlay.style.height = `${Sconstants.GAME_LOGIC_HEIGHT}px`;
+        overlay.style.width = `${Sconstants.GAME_LOGIC_WIDTH}px`;
 
         const background: HTMLDivElement = document.getElementById("background") as HTMLDivElement;
         background.style.height = `${canvas.height}px`;

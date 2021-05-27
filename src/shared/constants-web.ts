@@ -1,6 +1,9 @@
 export class ConstantsWeb {
-    public static VERSION: string = "0.1.3";
+    public static VERSION: string = "0.2.0";
+
+    //Debugging
     public static USE_HTTPS_SERVER: boolean = true;
+    public static DEBUG_OVERLAY_HITBOX_TEST: boolean = false;
 
     //Run settings
     public static TICK_DELAY: number = 10;
@@ -48,7 +51,21 @@ export class ConstantsWeb {
     //Scenes
     public static MG_ICECIRCLE_DRAW_ELLIPSE: boolean = false;
     public static MG_ICECIRCLE_ANIMATION_MS: number = 100;
+    public static MG_BEAMGUN_TRY_JUMP_FOR_MS: number = 200;
+    public static MG_BEAMGUN_TELEPORT_WIDTH: number = 100;
+    public static MG_BEAMGUN_TELEPORT_CIRCLE_RADIUS: number = 100;
+    public static MG_BEAMGUN_TELEPORT_DURATION: number = 500;
 
     public static LOBBY_NAME_FONT_SIZE: number = 130;
     public static LOBBY_TIP_HEADING_FONT_SIZE: number = 50;
+    public static LOBBY_ICONS_START_X: number = 1280;
+    public static LOBBY_ICONS_START_Y: number = 300;
+    public static LOBBY_ICONS_WIDTH: number = 320;
+    public static LOBBY_ICONS_HEIGHT: number = 180;
+    public static LOBBY_ICONS_GAP: number = 20;
+    public static LOBBY_AMOUNT_OF_MINIGAMES: number = 2;
+    public static LOBBY_START_BUTTON_X: number = 1180;
+    public static LOBBY_START_BUTTON_Y: number = 1290;
+    public static LOBBY_START_BUTTON_WIDTH: number = 200;
+    public static LOBBY_START_BUTTON_HEIGHT: number = 100;
 }
