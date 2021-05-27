@@ -33,7 +33,7 @@ export class OverlayWrapper {
 
     public updateScaling(): void {
         const widthRatio: number = CanvasContextWrapper.width / Sconstants.GAME_LOGIC_WIDTH;
-        this.overlay.style.scale = widthRatio.toString();
+        this.overlay.style.transform = `scale(${widthRatio})`;
 
         const bodyExtraWidth: number = window.innerWidth - CanvasContextWrapper.width;
         this.overlay.style.marginLeft = ((bodyExtraWidth / 2) - ((Sconstants.GAME_LOGIC_WIDTH - CanvasContextWrapper.width) / 2)) + "px";
